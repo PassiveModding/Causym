@@ -42,7 +42,7 @@ namespace Causym.Services
                 await locker.WaitAsync();
                 try
                 {
-                    await this.GetEmojis();
+                    await GetEmojis();
                 }
                 finally
                 {
@@ -67,7 +67,7 @@ namespace Causym.Services
         {
             using (var request = new HttpRequestMessage(HttpMethod.Get, EmojiMap))
             {
-                var response = this.Client.SendAsync(request).Result;
+                var response = await this.Client.SendAsync(request);
                 if (!response.IsSuccessStatusCode)
                 {
                     return;
