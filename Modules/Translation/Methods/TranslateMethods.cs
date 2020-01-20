@@ -181,7 +181,7 @@ namespace Causym.Translation
                 builder.Fields.Add(newField);
             }
 
-            if (builder.Fields.Count < 25 && builder.Length() < 5900)
+            if (builder.Fields.Count < 25 && builder.Length < 5900)
             {
                 if (message is RestUserMessage restMsg)
                 {

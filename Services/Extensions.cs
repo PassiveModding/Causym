@@ -14,6 +14,7 @@ namespace Causym
             return value;
         }
 
+        /*
         public static int Length(this Disqord.LocalEmbedBuilder builder)
         {
             int titleLength = builder.Title?.Length ?? 0;
@@ -23,5 +24,6 @@ namespace Causym
             int fieldSum = builder.Fields?.Sum(x => x.Name?.Length + x.Value?.Length) ?? 0;
             return titleLength + authorLength + descriptionLength + footerLength + fieldSum;
         }
+        */
     }
 }
