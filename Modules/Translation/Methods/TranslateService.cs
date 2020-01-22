@@ -7,6 +7,8 @@ using Disqord;
 using Disqord.Bot;
 using Disqord.Events;
 using Disqord.Rest;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Causym.Translation
 {
@@ -15,7 +17,7 @@ namespace Causym.Translation
     /// </summary>
     public partial class TranslateService
     {
-        private YandexTranslator translator;
+        private readonly YandexTranslator translator;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TranslateService"/> class.

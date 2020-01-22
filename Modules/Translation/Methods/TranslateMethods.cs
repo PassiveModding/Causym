@@ -66,7 +66,7 @@ namespace Causym.Translation
                 return null;
             }
 
-            var embed = new Disqord.LocalEmbedBuilder();
+            var embed = new LocalEmbedBuilder().WithAuthor(message.Author);
             embed.AddField($"Original Message [{result.TranslateResult.SourceLanguage}]", result.TranslateResult.SourceText.FixLength());
             embed.AddField($"Translated Message [{result.TranslateResult.DestinationLanguage}]", result.TranslateResult.TranslatedText.FixLength());
 
@@ -95,7 +95,7 @@ namespace Causym.Translation
                 return null;
             }
 
-            var builder = new Disqord.LocalEmbedBuilder()
+            var builder = new LocalEmbedBuilder()
             {
                 Timestamp = embed.Timestamp,
                 Color = embed.Color
