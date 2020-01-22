@@ -17,8 +17,10 @@ namespace Causym.Services.Prefix
 
         public ValueTask<IEnumerable<IPrefix>> GetPrefixesAsync(CachedUserMessage message)
         {
-            var prefixes = new List<IPrefix>(1);
-            prefixes.Add(MentionPrefix.Instance);
+            var prefixes = new List<IPrefix>(1)
+            {
+                MentionPrefix.Instance
+            };
 
             if (message.Guild != null)
             {
