@@ -16,8 +16,8 @@ namespace Causym
 {
     public class Program
     {
+        private readonly Logger logger = new Logger();
         private Config config;
-        private Logger logger = new Logger();
 
         public static void Main(string[] args = null)
         {
@@ -30,8 +30,11 @@ namespace Causym
 
             using (var db = new DataContext())
             {
-                db.Database.EnsureCreated();
-                db.SaveChanges();
+                // db.Database.EnsureCreated();
+                await db.Database.EnsureCreatedAsync();
+
+                // db.SaveChanges();
+                await db.SaveChangesAsync();
             }
 
             var bot = new DiscordBotSharder(TokenType.Bot, config.Entries[Config.Defaults.Token.ToString()], new DatabasePrefixProvider(config.Entries[Config.Defaults.Prefix.ToString()]), new DiscordBotConfiguration
