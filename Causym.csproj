@@ -11,12 +11,13 @@
 
   <ItemGroup>
     <PackageReference Include="CommandLineParser" Version="2.7.82" />
-    <PackageReference Include="Disqord" Version="1.0.0-nightly-00019" />
-    <PackageReference Include="Disqord.Bot" Version="1.0.0-nightly-00019" />
-    <PackageReference Include="Disqord.Extensions.Interactivity" Version="1.0.0-nightly-00019" />
+    <PackageReference Include="Disqord" Version="1.0.0-nightly-00020" />
+    <PackageReference Include="Disqord.Bot" Version="1.0.0-nightly-00020" />
+    <PackageReference Include="Disqord.Extensions.Interactivity" Version="1.0.0-nightly-00020" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.4.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="3.1.1" />
-    <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
+    <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.113">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
