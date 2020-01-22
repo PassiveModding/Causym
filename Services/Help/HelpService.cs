@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Text;
 using Disqord;
 using Qmmands;
 
@@ -8,10 +9,25 @@ namespace Causym.Services.Help
     {
         public static LocalEmbedBuilder GetModuleHelp(Module module)
         {
-            var commandInfos = module.Commands.Select(x => GetCommandHelp(x));
+            if (module.Commands.Count <= 25)
+            {
+                var commandInfos = module.Commands.Select(x => GetCommandInfoField(x));
+                var builder = new LocalEmbedBuilder();
+                foreach (var info in commandInfos)
+                {
+                    builder.AddField(info);
+                }
 
-            // TODO: Split based on max embed length (or x amount of fields + specific max length)
-            return new LocalEmbedBuilder().WithDescription(string.Join("\n", commandInfos)).WithTitle(module.Name);
+                // TODO: Split based on max embed length (or x amount of fields + specific max length)
+                return builder.WithTitle(module.Name);
+            }
+            else
+            {
+                var commandInfos = module.Commands.Select(x => GetCommandHelp(x));
+
+                // TODO: Split based on max embed length (or x amount of fields + specific max length)
+                return new LocalEmbedBuilder().WithDescription(string.Join("\n", commandInfos)).WithTitle(module.Name);
+            }
         }
 
         public static string GetCommandHelp(Command command)
@@ -26,34 +42,89 @@ namespace Causym.Services.Help
 
         private static string GetCommandInfo(Command command)
         {
-            var response = $"**{command.Name}**";
+            var sb = new StringBuilder();
+            sb.Append("**");
+            sb.Append(command.Name);
+            sb.AppendLine("**");
+
             if (command.Description != null)
             {
-                response += "\n" + command.Description;
+                sb.AppendLine(command.Description);
             }
 
             if (command.Remarks != null)
             {
-                response += "\n**[**Remarks**]**" + command.Remarks;
+                sb.AppendLine("**[**Remarks**]**");
+                sb.AppendLine(command.Remarks);
             }
 
             if (command.FullAliases.Count > 1)
             {
-                response += "\n**[**Aliases**]**" + string.Join(", ", command.FullAliases.Select(x => $"`{x}`"));
+                sb.AppendLine("**[**Aliases**]**");
+                sb.AppendJoin(", ", command.FullAliases.Select(x => $"`{x}`"));
+                sb.AppendLine();
             }
 
             if (command.Checks.Count > 0)
             {
                 // TODO: Implement custom checkattribute with name and description
-                response += "\n**[**Checks**]**" + string.Join(", ", command.Checks.Select(x => x.GetType().Name));
+                sb.AppendLine("**[**Checks**]**");
+                sb.AppendJoin(", ", command.Checks.Select(x => x.GetType().Name));
+                sb.AppendLine();
             }
 
             if (!command.IsEnabled)
             {
-                response += "\n__Command is currently disabled__";
+                sb.AppendLine("__Command is currently disabled__");
             }
 
-            return response;
+            return sb.ToString();
+        }
+
+        private static LocalEmbedFieldBuilder GetCommandInfoField(Command command)
+        {
+            var field = new LocalEmbedFieldBuilder
+            {
+                Name = command.Name
+            };
+
+            var sb = new StringBuilder();
+            sb.AppendLine(FormatCommand(command));
+
+            if (command.Description != null)
+            {
+                sb.AppendLine(command.Description);
+            }
+
+            if (command.Remarks != null)
+            {
+                sb.AppendLine("**[**Remarks**]**");
+                sb.AppendLine(command.Remarks);
+            }
+
+            if (command.FullAliases.Count > 1)
+            {
+                sb.AppendLine("**[**Aliases**]**");
+                sb.AppendJoin(", ", command.FullAliases.Select(x => $"`{x}`"));
+                sb.AppendLine();
+            }
+
+            if (command.Checks.Count > 0)
+            {
+                // TODO: Implement custom checkattribute with name and description
+                sb.AppendLine("**[**Checks**]**");
+                sb.AppendJoin(", ", command.Checks.Select(x => x.GetType().Name));
+                sb.AppendLine();
+            }
+
+            if (!command.IsEnabled)
+            {
+                sb.AppendLine("__Command is currently disabled__");
+            }
+
+            field.Value = sb.ToString();
+
+            return field;
         }
 
         private static string FormatParameter(Parameter parameter)
@@ -61,17 +132,17 @@ namespace Causym.Services.Help
             var str = parameter.Name;
             if (parameter.IsMultiple)
             {
-                str = str + "*";
+                str += "*";
             }
 
             if (parameter.IsOptional)
             {
-                str = str + "?";
+                str += "?";
             }
 
             if (parameter.IsRemainder)
             {
-                str = str + "...";
+                str += "...";
             }
 
             if (parameter.Description != null)
