@@ -9,14 +9,9 @@ namespace Causym.Modules.Configure
     {
         [Command("SetPrefix")]
         [RequireMemberGuildPermissions(Disqord.Permission.Administrator)]
+        [GuildOnly]
         public async Task SetPrefixAsync(string prefix = null)
         {
-            if (Context.Guild == null)
-            {
-                await ReplyAsync("Command can only be used from within a discord server.");
-                return;
-            }
-
             using (var db = new DataContext())
             {
                 var config = db.Guilds.FirstOrDefault(x => x.GuildId == Context.Guild.Id);
