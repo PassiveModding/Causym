@@ -15,8 +15,9 @@ namespace Causym.Services
     public sealed class IEmojiParser : TypeParser<IEmoji>
     {
         private static readonly string EmojiMap = "https://static.emzi0767.com/misc/discordEmojiMap.json";
+        private static readonly SemaphoreSlim Locker = new SemaphoreSlim(1, 1);
+
         private static EmojiDefinition[] emojis = null;
-        private static SemaphoreSlim locker = new SemaphoreSlim(1, 1);
 
         /// <summary>
         /// Initializes a new instance of the <see cref="IEmojiParser"/> class.
@@ -39,14 +40,14 @@ namespace Causym.Services
 
             if (emojis == null)
             {
-                await locker.WaitAsync();
+                await Locker.WaitAsync();
                 try
                 {
                     await GetEmojis();
                 }
                 finally
                 {
-                    locker.Release();
+                    Locker.Release();
                 }
             }
 
