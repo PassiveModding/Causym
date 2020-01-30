@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Net.Http;
-using Causym.Translation.TranslationService;
 using Newtonsoft.Json.Linq;
 
-namespace Causym.Translation
+namespace Causym.Modules.Translation
 {
     public class YandexTranslator
     {

@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Disqord;
 using Disqord.Bot.Prefixes;
 
-namespace Causym.Services.Prefix
+namespace Causym.Services
 {
     public class DatabasePrefixProvider : IPrefixProvider
     {

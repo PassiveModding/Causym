@@ -8,6 +8,7 @@ namespace Causym.Modules.Configure
     public class Config : DiscordModuleBase
     {
         [Command("SetPrefix")]
+        [Description("Set's the bot's custom prefix for the current server")]
         [RequireMemberGuildPermissions(Disqord.Permission.Administrator)]
         [GuildOnly]
         public async Task SetPrefixAsync(string prefix = null)

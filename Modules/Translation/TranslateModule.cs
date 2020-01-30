@@ -1,12 +1,11 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using Causym.Services.Help;
-using Causym.Translation.TranslationService;
 using Disqord;
 using Disqord.Bot;
 using Qmmands;
 
-namespace Causym.Translation
+namespace Causym.Modules.Translation
 {
     /// <summary>
     /// Translate module, handles configuration and translation of messages.

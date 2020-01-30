@@ -8,12 +8,10 @@ namespace Causym.Modules.Admin
     public class Admin : DiscordModuleBase
     {
         [Command("SetUsername")]
+        [Description("Sets the bot's display username")]
         public async Task SetUserNameAsync([Remainder]string username)
         {
-            await Context.Bot.ModifyCurrentUserAsync(x =>
-            {
-                x.Name = username;
-            });
+            await Context.Bot.ModifyCurrentUserAsync(x => x.Name = username);
             await ReplyAsync("Username updated.");
         }
     }

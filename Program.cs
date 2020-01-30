@@ -3,13 +3,12 @@ using System.Net.Http;
 using System.Reflection;
 using System.Threading.Tasks;
 using Causym.Services;
-using Causym.Services.Prefix;
-using Causym.Translation;
 using CommandLine;
 using Disqord;
 using Disqord.Bot;
 using Disqord.Bot.Sharding;
 using Disqord.Extensions.Interactivity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Causym
@@ -30,21 +29,21 @@ namespace Causym
 
             using (var db = new DataContext())
             {
-                // db.Database.EnsureCreated();
-                await db.Database.EnsureCreatedAsync();
+                await db.Database.MigrateAsync();
 
-                // db.SaveChanges();
                 await db.SaveChangesAsync();
             }
 
             var bot = new DiscordBotSharder(TokenType.Bot, config.Entries[Config.Defaults.Token.ToString()], new DatabasePrefixProvider(config.Entries[Config.Defaults.Prefix.ToString()]), new DiscordBotConfiguration
             {
                 ProviderFactory = bot => new ServiceCollection()
-                    .AddSingleton(new TranslateService(bot, config, logger))
+                    .AddSingleton(new Modules.Translation.TranslateService(bot, config, logger))
                     .AddDbContext<DataContext>(ServiceLifetime.Transient)
                     .AddSingleton(bot)
                     .AddSingleton(config)
                     .AddSingleton(logger)
+                    .AddSingleton(new Modules.Translation.TranslateService(bot, config, logger))
+                    .AddSingleton(new Modules.Statistics.StatisticsService(bot))
                     .BuildServiceProvider()
             });
             var client = new HttpClient();

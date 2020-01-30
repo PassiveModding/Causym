@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Causym.Translation.TranslationService
+namespace Causym.Modules.Translation
 {
     public class TranslationSet
     {

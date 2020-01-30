@@ -1,9 +1,9 @@
 ﻿namespace Causym.Modules.Translation
 {
-    public class TranslateFilter
+    public class TranslateGuild
     {
         public ulong GuildId { get; set; }
 
-        public ulong RoleId { get; set; }
+        public bool ReactionsEnabled { get; set; } = true;
     }
 }

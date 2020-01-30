@@ -1,11 +1,10 @@
 using System;
 using System.Linq;
 using System.Text.RegularExpressions;
-using Causym.Translation.TranslationService;
 using Disqord;
 using Disqord.Rest;
 
-namespace Causym.Translation
+namespace Causym.Modules.Translation
 {
     /// <summary>
     /// Handles translation methods.

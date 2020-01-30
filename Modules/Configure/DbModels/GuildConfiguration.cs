@@ -1,4 +1,4 @@
-﻿namespace Causym
+﻿namespace Causym.Modules.Configure
 {
     /// <summary>
     /// Default guild configuration for settings used on a bot (non module) level.

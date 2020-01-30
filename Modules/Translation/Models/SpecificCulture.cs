@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
 
-namespace Causym.Translation
+namespace Causym.Modules.Translation
 {
     public class SpecificCulture
     {

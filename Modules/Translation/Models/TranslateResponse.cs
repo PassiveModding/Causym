@@ -1,4 +1,4 @@
-﻿namespace Causym.Translation.TranslationService
+﻿namespace Causym.Modules.Translation
 {
     public class TranslateResponse
     {

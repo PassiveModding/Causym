@@ -33,8 +33,15 @@ namespace Causym
             Bot.Ready += ReadyAsync;
             Bot.CommandExecuted += CommandExecutedAsync;
             Bot.CommandExecutionFailed += CommandExecutionFailedAsync;
-            Bot.MessageReceived += Bot_MessageReceived;
+
+            // Bot.MessageReceived += Bot_MessageReceived;
+            // Bot.Logger.MessageLogged += Logger_MessageLogged;
             Logger.Log($"Initialized", Logger.Source.Bot);
+        }
+
+        private void Logger_MessageLogged(object sender, Disqord.Logging.MessageLoggedEventArgs e)
+        {
+            Logger.Log(e.Message, Logger.Source.Bot);
         }
 
         private Task CommandExecutionFailedAsync(CommandExecutionFailedEventArgs e)
@@ -51,8 +58,15 @@ namespace Causym
 
         private Task ReadyAsync(ReadyEventArgs e)
         {
+            /*if (e is ShardReadyEventArgs s)
+            {
+                Logger.Log($"Shard {s.ShardId} Ready", Logger.Source.Bot);
+            }
+            else
+            {*/
             Logger.Log($"Ready", Logger.Source.Bot);
             Logger.Log($"Guilds: {e.Client.Guilds.Count}", Logger.Source.Bot);
+            Bot.SetPresenceAsync(new Disqord.LocalActivity("?help", Disqord.ActivityType.Watching));
             return Task.CompletedTask;
         }
 

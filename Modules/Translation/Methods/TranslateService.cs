@@ -2,15 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Causym.Translation.TranslationService;
 using Disqord;
 using Disqord.Bot;
 using Disqord.Events;
 using Disqord.Rest;
-using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Storage;
 
-namespace Causym.Translation
+namespace Causym.Modules.Translation
 {
     /// <summary>
     /// Contains general methods, properties and fields for the translate service.
@@ -122,8 +119,7 @@ namespace Causym.Translation
             }
 
             if (destLang == null) return;
-
-            var msg = await e.Message.Downloadable.GetOrDownloadAsync();
+            var msg = await e.Message.FetchAsync();
             if (msg == null) return;
             if (!(msg is RestUserMessage message)) return;
 

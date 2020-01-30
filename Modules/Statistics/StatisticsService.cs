@@ -1,0 +1,97 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using Disqord.Bot;
+using Disqord.Bot.Sharding;
+using Disqord.Events;
+
+namespace Causym.Modules.Statistics
+{
+    public partial class StatisticsService
+    {
+        private Dictionary<ulong, (ulong ChannelId, int MemberCount)> updateQueue = new Dictionary<ulong, (ulong ChannelId, int MemberCount)>();
+
+        public StatisticsService(DiscordBotBase bot)
+        {
+            using (var db = new DataContext())
+            {
+                SnapshotEnabledCache = db.StatServers.Where(x => x.SnapshotsEnabled).Select(x => x.GuildId).ToHashSet();
+            }
+
+            Bot = bot;
+            Bot.MemberJoined += Bot_MemberJoined;
+            Bot.MemberLeft += Bot_MemberLeft;
+            Bot.MessageReceived += Bot_MessageReceived;
+            ChannelTimer = new Timer(ChannelCallback, null, 0, 60 * 1000);
+
+            // 10 minutes
+            SnapshotTimer = new Timer(SnapshotCallback, null, 0, 60 * 1000 * 10);
+        }
+
+        public DiscordBotBase Bot { get; }
+
+        public Timer ChannelTimer { get; }
+
+        private async void ChannelCallback(object state)
+        {
+            try
+            {
+                // Prevent the timer from running until this method ends
+                ChannelTimer.Change(Timeout.Infinite, Timeout.Infinite);
+                var copy = updateQueue.ToDictionary(x => x.Key, x => x.Value);
+                foreach (var item in copy)
+                {
+                    updateQueue.Remove(item.Key);
+
+                    try
+                    {
+                        await Bot.ModifyVoiceChannelAsync(item.Value.ChannelId, x => x.Name = $"👥 Members: {item.Value.MemberCount}");
+                    }
+                    catch (Exception e)
+                    {
+                        using (var db = new DataContext())
+                        {
+                            var config = db.StatServers.FirstOrDefault(x => x.GuildId == item.Key);
+                            if (config == null) return;
+
+                            config.MemberChannelId = null;
+                            db.Update(config);
+                            await db.SaveChangesAsync();
+                        }
+                    }
+                }
+            }
+            finally
+            {
+                ChannelTimer.Change(60000, Timeout.Infinite);
+            }
+        }
+
+        private async Task Bot_MemberLeft(MemberLeftEventArgs e)
+        {
+            using (var db = new DataContext())
+            {
+                var config = db.StatServers.FirstOrDefault(x => x.GuildId == e.Guild.Id);
+                if (config == null || config.MemberChannelId == null) return;
+                if (!e.Guild.VoiceChannels.TryGetValue(config.MemberChannelId.Value, out var channel)) return;
+
+                updateQueue[e.Guild.Id] = (channel.Id, e.Guild.MemberCount);
+            }
+        }
+
+        private async Task Bot_MemberJoined(MemberJoinedEventArgs e)
+        {
+            using (var db = new DataContext())
+            {
+                var config = db.StatServers.FirstOrDefault(x => x.GuildId == e.Member.Guild.Id);
+                if (config == null || config.MemberChannelId == null) return;
+                if (!e.Member.Guild.VoiceChannels.TryGetValue(config.MemberChannelId.Value, out var channel)) return;
+
+                updateQueue[e.Member.Guild.Id] = (channel.Id, e.Member.Guild.MemberCount);
+            }
+        }
+
+    }
+}
