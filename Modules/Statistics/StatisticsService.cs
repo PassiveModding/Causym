@@ -26,8 +26,12 @@ namespace Causym.Modules.Statistics
             Bot.MessageReceived += Bot_MessageReceived;
             ChannelTimer = new Timer(ChannelCallback, null, 0, 60 * 1000);
 
-            // 10 minutes
+            // 10 minutes vs 30 sec in debug mode.
+#if DEBUG
+            SnapshotTimer = new Timer(SnapshotCallback, null, 0, 30 * 1000);
+#else
             SnapshotTimer = new Timer(SnapshotCallback, null, 0, 60 * 1000 * 10);
+#endif
         }
 
         public DiscordBotBase Bot { get; }

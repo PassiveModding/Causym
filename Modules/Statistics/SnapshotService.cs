@@ -58,7 +58,7 @@ namespace Causym.Modules.Statistics
                             if (!Bot.Guilds.TryGetValue(config.GuildId, out var guild)) continue;
 
                             int messageCount = 0;
-                            if (!GuildMessageTracker.TryGetValue(config.GuildId, out var channelDictionary))
+                            if (GuildMessageTracker.TryGetValue(config.GuildId, out var channelDictionary))
                             {
                                 foreach (var channel in channelDictionary)
                                 {
@@ -98,7 +98,11 @@ namespace Causym.Modules.Statistics
             }
             finally
             {
+#if DEBUG
+                SnapshotTimer.Change(30 * 1000, Timeout.Infinite);
+#else
                 SnapshotTimer.Change(60 * 1000 * 10, Timeout.Infinite);
+#endif
             }
         }
     }
