@@ -44,7 +44,7 @@ namespace Causym
         /// </summary>
         public void Save()
         {
-            File.WriteAllText(savePath, JsonConvert.SerializeObject(this));
+            File.WriteAllText(savePath, JsonConvert.SerializeObject(this, Formatting.Indented));
         }
 
         private static Config GenerateAndSaveDefaultConfig(string path)
