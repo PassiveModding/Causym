@@ -27,7 +27,7 @@ namespace Causym
 
         public void Log(string message, Source source, LogLevel level = LogLevel.Info)
         {
-            Log(message, source.ToString().ToUpper(), level);
+            Log(message, source.ToString(), level);
         }
     }
 }
