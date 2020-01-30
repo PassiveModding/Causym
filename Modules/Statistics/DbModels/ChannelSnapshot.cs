@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace Causym.Modules.Statistics
 {
@@ -10,6 +11,7 @@ namespace Causym.Modules.Statistics
 
         public int MessageCount { get; set; }
 
-        public DateTime SnapshotTime { get; set; }
+        [Required]
+        public DateTime SnapshotTime { get; set; } = DateTime.UtcNow;
     }
 }
