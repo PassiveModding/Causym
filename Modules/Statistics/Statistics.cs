@@ -114,6 +114,78 @@ namespace Causym.Modules.Statistics
             }
         }
 
+        [Command("PlotMembers")]
+        public async Task PlotMembersAsync()
+        {
+            using (var db = new DataContext())
+            {
+                var snapshots = db.StatSnapshots.Where(x => x.GuildId == Context.Guild.Id).OrderByDescending(x => x.SnapshotTime).Take(144);
+
+                int count = snapshots.Count();
+                if (count == 0)
+                {
+                    await ReplyAsync("No Captured Data Found.");
+                    return;
+                }
+                else if (count == 1)
+                {
+                    await ReplyAsync("Not Enough Captured Data Found.");
+                    return;
+                }
+
+                var plt = new ScottPlot.Plot(1000, 500);
+                var xValues = snapshots.Select(x => (double)x.SnapshotTime.Ticks).ToArray();
+                plt.PlotScatter(xValues, snapshots.Select(x => (double)x.MemberCount).ToArray(), Color.Blue, label: "Members");
+                plt.PlotScatter(xValues, snapshots.Select(x => (double)x.MembersDND).ToArray(), Color.Red, label: "Members DND");
+                plt.PlotScatter(xValues, snapshots.Select(x => (double)x.MembersIdle).ToArray(), Color.Orange, label: "Members Idle");
+                plt.PlotScatter(xValues, snapshots.Select(x => (double)x.MembersOnline).ToArray(), Color.Green, label: "Members Online");
+
+                // Calculate difference in ticks between first and last snapshots
+                var difference = xValues.First() - xValues.Last();
+                int steps = 6;
+                long increment = (long)difference / steps;
+                long value = (long)xValues.Last();
+
+                var snapshotTicks = new List<double>();
+                var snapshotLabels = new List<string>();
+
+                // Add labels along x axis
+                for (int i = 0; i <= steps; i++)
+                {
+                    snapshotTicks.Add(value);
+                    snapshotLabels.Add(new DateTime(value).ToString("dd/MM HH:mm tt"));
+
+                    value += increment;
+                }
+
+                plt.XTicks(snapshotTicks.ToArray(), snapshotLabels.ToArray());
+
+                // Label axes
+                plt.YLabel("Members");
+                plt.XLabel("Time");
+
+                // Set horizontal margin to be sloightly larger to accomodate for longer labels
+                plt.AxisAuto(0.1);
+
+                plt.Style(ScottPlot.Style.Gray2);
+                plt.Title("Member Stats");
+                plt.Legend();
+                await SendPlot(Context.Channel, plt);
+            }
+        }
+
+        public async Task SendPlot(ICachedMessageChannel channel, ScottPlot.Plot plot)
+        {
+            var map = plot.GetBitmap();
+
+            using (var stream = new MemoryStream())
+            {
+                map.Save(stream, System.Drawing.Imaging.ImageFormat.Png);
+                stream.Seek(0, SeekOrigin.Begin);
+                await channel.SendMessageAsync(new LocalAttachment(stream, "data.png"));
+            }
+        }
+
         private async Task PlotAsync(double[] xValues, double[] yValues, string yTitle, string title)
         {
             var plt = new ScottPlot.Plot(1000, 500);
@@ -148,14 +220,7 @@ namespace Causym.Modules.Statistics
 
             plt.Style(ScottPlot.Style.Gray2);
             plt.Title(title);
-            var map = plt.GetBitmap();
-
-            using (var stream = new MemoryStream())
-            {
-                map.Save(stream, System.Drawing.Imaging.ImageFormat.Png);
-                stream.Seek(0, SeekOrigin.Begin);
-                await Context.Channel.SendMessageAsync(new LocalAttachment(stream, "data.png"));
-            }
+            await SendPlot(Context.Channel, plt);
         }
     }
 }
