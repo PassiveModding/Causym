@@ -140,14 +140,14 @@ namespace Causym.Modules.Statistics
             plt.XTicks(snapshotTicks.ToArray(), snapshotLabels.ToArray());
 
             // Label axes
-            plt.YLabel("Messages");
+            plt.YLabel(yTitle);
             plt.XLabel("Time");
 
             // Set horizontal margin to be sloightly larger to accomodate for longer labels
             plt.AxisAuto(0.1);
 
             plt.Style(ScottPlot.Style.Gray2);
-            plt.Title($"#{Context.Channel.Name} Messages");
+            plt.Title(title);
             var map = plt.GetBitmap();
 
             using (var stream = new MemoryStream())
