@@ -96,6 +96,5 @@ namespace Causym.Modules.Statistics
                 updateQueue[e.Member.Guild.Id] = (channel.Id, e.Member.Guild.MemberCount);
             }
         }
-
     }
 }
