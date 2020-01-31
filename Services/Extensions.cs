@@ -1,4 +1,7 @@
-﻿using System.Linq;
+﻿using Causym.Services;
+using System;
+using System.Collections.Generic;
+using System.Reflection;
 
 namespace Causym
 {
@@ -12,6 +15,17 @@ namespace Causym
             }
 
             return value;
+        }
+
+        public static IEnumerable<Type> GetServices(Assembly assembly)
+        {
+            foreach (Type type in assembly.GetTypes())
+            {
+                if (type.GetCustomAttributes(typeof(ServiceAttribute), true).Length > 0)
+                {
+                    yield return type;
+                }
+            }
         }
     }
 }
