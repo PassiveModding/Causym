@@ -15,12 +15,12 @@ namespace Causym.Modules.Statistics
 
         public HashSet<ulong> SnapshotEnabledCache { get; set; } = new HashSet<ulong>();
 
-        private async Task Bot_MessageReceived(MessageReceivedEventArgs e)
+        private Task Bot_MessageReceived(MessageReceivedEventArgs e)
         {
             lock (GuildMessageTracker)
             {
                 // TODO: Ensure the guild is tracked, use locally cached list?
-                if (e.Message.Guild == null) return;
+                if (e.Message.Guild == null) return Task.CompletedTask;
                 if (SnapshotEnabledCache.Contains(e.Message.Guild.Id))
                 {
                     if (!GuildMessageTracker.ContainsKey(e.Message.Guild.Id))
@@ -38,6 +38,8 @@ namespace Causym.Modules.Statistics
                     }
                 }
             }
+
+            return Task.CompletedTask;
         }
 
         private async void SnapshotCallback(object state)
@@ -54,7 +56,6 @@ namespace Causym.Modules.Statistics
                         SnapshotEnabledCache = configs.Select(x => x.GuildId).ToHashSet();
                         foreach (var config in configs)
                         {
-
                             if (!Bot.Guilds.TryGetValue(config.GuildId, out var guild)) continue;
 
                             int messageCount = 0;
@@ -74,8 +75,6 @@ namespace Causym.Modules.Statistics
                                     messageCount += channel.Value;
                                 }
                             }
-
-
 
                             var snapshot = new StatisticsSnapshot
                             {

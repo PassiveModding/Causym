@@ -9,7 +9,7 @@ namespace Causym.Modules.Translation
         [Required]
         [MaxLength(100)]
         public string Source { get; set; }
-        
+
         [Required]
         [MaxLength(100)]
         public string DestLang { get; set; }

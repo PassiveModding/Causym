@@ -13,7 +13,6 @@ namespace Causym.Modules.Statistics
     [GuildOnly]
     public class Statistics : DiscordModuleBase
     {
-
         [Command("SetSnapshots")]
         public async Task SetSnapshotsAsync(bool? enabled = null)
         {
