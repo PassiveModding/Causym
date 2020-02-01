@@ -58,7 +58,7 @@ namespace Causym.Modules.Translation
             return translationString;
         }
 
-        public LocalEmbedBuilder GetTranslationEmbed(TranslateResponse result, IUserMessage message)
+        public static LocalEmbedBuilder GetTranslationEmbed(TranslateResponse result, IUserMessage message)
         {
             if (result.TranslateResult == null)
             {
@@ -225,7 +225,7 @@ namespace Causym.Modules.Translation
             return new TranslateResponse(TranslateResponse.Result.TranslationError);
         }
 
-        private TranslateResponse.TranslationResult TranslateText(string inputText, string languageCode)
+        private TranslationResult TranslateText(string inputText, string languageCode)
         {
             try
             {

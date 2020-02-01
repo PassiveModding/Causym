@@ -19,16 +19,5 @@
         public Result ResponseResult { get; set; }
 
         public TranslationResult TranslateResult { get; set; }
-
-        public class TranslationResult
-        {
-            public string SourceLanguage { get; set; }
-
-            public string DestinationLanguage { get; set; }
-
-            public string SourceText { get; set; }
-
-            public string TranslatedText { get; set; }
-        }
     }
 }

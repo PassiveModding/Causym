@@ -16,14 +16,13 @@ namespace Causym.Modules.Translation
 
             // Client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", apiKey);
             PopulateLanguages();
-            AvailableLanguages = GetAvailableLanguages();
         }
 
         public HttpClient Client { get; }
 
         public string ApiKey { get; }
 
-        public SpecificCulture[] AvailableLanguages { get; set; }
+        private SpecificCulture[] AvailableLanguages;
 
         public bool IsValidLanguageCode(string code)
         {
@@ -40,7 +39,7 @@ namespace Causym.Modules.Translation
             return AvailableLanguages;
         }
 
-        public TranslateResponse.TranslationResult TranslateText(string source, string targetLanguage)
+        public TranslationResult TranslateText(string source, string targetLanguage)
         {
             if (!IsValidLanguageCode(targetLanguage))
             {
@@ -57,7 +56,7 @@ namespace Causym.Modules.Translation
             var responseJson = response.Content.ReadAsStringAsync().Result;
             var token = JToken.Parse(responseJson);
 
-            var result = new TranslateResponse.TranslationResult();
+            var result = new TranslationResult();
 
             var lang = token.Value<JToken>("lang").ToString();
             var splitChar = lang.IndexOf("-");
@@ -74,7 +73,7 @@ namespace Causym.Modules.Translation
             return result;
         }
 
-        public TranslateResponse.TranslationResult TranslateText(string source, string sourceLanguage, string targetLanguage)
+        public TranslationResult TranslateText(string source, string sourceLanguage, string targetLanguage)
         {
             if (!IsValidLanguageCode(targetLanguage))
             {
@@ -95,7 +94,7 @@ namespace Causym.Modules.Translation
             var responseJson = response.Content.ReadAsStringAsync().Result;
             var token = JToken.Parse(responseJson);
 
-            var result = new TranslateResponse.TranslationResult();
+            var result = new TranslationResult();
 
             var text = token.Value<JArray>("text").FirstOrDefault().ToString();
             result.DestinationLanguage = targetLanguage;
@@ -111,7 +110,7 @@ namespace Causym.Modules.Translation
             var response = Client.GetAsync($"https://translate.yandex.net/api/v1.5/tr.json/getLangs?key={ApiKey}&ui=en").GetAwaiter().GetResult();
             if (!response.IsSuccessStatusCode)
             {
-                AvailableLanguages = new SpecificCulture[] { };
+                AvailableLanguages = Array.Empty<SpecificCulture>();
             }
 
             var jResponse = JToken.Parse(response.Content.ReadAsStringAsync().Result);
