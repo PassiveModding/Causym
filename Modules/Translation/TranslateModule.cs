@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Globalization;
+using System.Linq;
 using System.Threading.Tasks;
 using Causym.Services.Help;
 using Disqord;
@@ -38,7 +39,7 @@ namespace Causym.Modules.Translation
             foreach (var languageGroup in TranslateService.GetAvailableLanguages().GroupBy(x => x.BaseCulture.Name.ToCharArray().First()).OrderBy(x => x.Key))
             {
                 var resContent = languageGroup.Select(x => $"`{x.BaseCulture.Name}` - **{x.BaseCulture.DisplayName}** {x.BaseCulture.NativeName}").ToArray();
-                embed.AddField(languageGroup.Key.ToString(), string.Join("\n", resContent));
+                embed.AddField(languageGroup.Key.ToString(CultureInfo.CurrentCulture), string.Join("\n", resContent));
             }
 
             await ReplyAsync("", false, embed.Build());
@@ -66,7 +67,7 @@ namespace Causym.Modules.Translation
                         GuildId = Context.Guild.Id,
 
                         // Enable by default.
-                        ReactionsEnabled = setting.HasValue ? setting.Value : true
+                        ReactionsEnabled = setting ?? true
                     };
                     db.TranslateGuilds.Add(match);
                 }
