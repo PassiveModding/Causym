@@ -14,7 +14,7 @@ namespace Causym.Services
     /// </summary>
     public sealed class IEmojiParser : TypeParser<IEmoji>
     {
-        private static readonly string EmojiMap = "https://static.emzi0767.com/misc/discordEmojiMap.json";
+        private const string EmojiMap = "https://static.emzi0767.com/misc/discordEmojiMap.json";
         private static readonly SemaphoreSlim Locker = new SemaphoreSlim(1, 1);
 
         private static EmojiDefinition[] emojis = null;
