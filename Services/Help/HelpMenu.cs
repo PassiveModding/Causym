@@ -9,7 +9,8 @@ namespace Causym.Services.Help
 {
     public class HelpMenu : MenuBase
     {
-        private readonly Dictionary<string, (Module Module, HelpMetadataAttribute HelpData)> pages = new Dictionary<string, (Module, HelpMetadataAttribute)>();
+        private readonly Dictionary<string, LocalEmbed> pages = new Dictionary<string, LocalEmbed>();
+        private LocalEmbed homePage;
 
         public HelpMenu(CommandService commandService)
         {
@@ -20,34 +21,51 @@ namespace Causym.Services.Help
 
         protected override async Task<IUserMessage> InitialiseAsync()
         {
+            var tempDict = new Dictionary<string, (Module Module, LocalEmbedBuilder Embed, string Title)>();
             foreach (var module in CommandService.GetAllModules())
             {
                 if (module.Attributes.FirstOrDefault(x => x.GetType().Equals(typeof(HelpMetadataAttribute))) is HelpMetadataAttribute attMatch)
                 {
-                    if (!pages.TryAdd(attMatch.ButtonCode, (module, attMatch)))
+                    var title = $"{attMatch.ButtonCode} {module.Name}";
+                    if (!tempDict.TryAdd(attMatch.ButtonCode, (module, HelpService.GetModuleHelp(module).WithColor(attMatch.Color), title)))
                     {
                         // TODO: warn about module being ignored due to duplicate button.
                     }
                 }
             }
 
-            var homePage = new LocalEmbedBuilder().WithTitle("Modules");
-            foreach (var page in pages)
+            var footerTitles = new List<string>
             {
-                homePage.AddField(new LocalEmbedFieldBuilder
+                "❓ Help"
+            };
+
+            footerTitles.AddRange(tempDict.Values.Select(x => x.Title));
+            var footerContent = string.Join(", ", footerTitles);
+            var homeBuilder = new LocalEmbedBuilder().WithTitle("Modules").WithColor(Color.Aqua).WithFooter(footerContent);
+            foreach (var dPage in tempDict)
+            {
+                homeBuilder.AddField(new LocalEmbedFieldBuilder
                 {
-                    Name = $"{page.Key} " + page.Value.Module.Name,
-                    Value = string.Join(", ", page.Value.Module.Commands.Select(c => '`' + c.Name + '`'))
+                    Name = dPage.Value.Title,
+                    Value = string.Join(", ", dPage.Value.Module.Commands.Select(c => '`' + c.Name + '`'))
                 });
+
+                pages.Add(dPage.Key, dPage.Value.Embed.WithFooter(footerContent).Build());
             }
 
-            var message = await Channel.SendMessageAsync("", false, homePage.Build());
+            homePage = homeBuilder.Build();
+
+            var message = await Channel.SendMessageAsync("", false, homePage);
+            await AddButtonAsync(new Button(new LocalEmoji("❓"), x =>
+            {
+                return Message.ModifyAsync(m => m.Embed = homePage);
+            }));
 
             foreach (var page in pages)
             {
                 await AddButtonAsync(new Button(new LocalEmoji(page.Key), x =>
                 {
-                    return Message.ModifyAsync(m => m.Embed = HelpService.GetModuleHelp(page.Value.Module).WithColor(page.Value.HelpData.Color).Build());
+                    return Message.ModifyAsync(m => m.Embed = page.Value);
                 }));
             }
 
