@@ -181,7 +181,10 @@ namespace Causym.Modules.Statistics
             {
                 map.Save(stream, System.Drawing.Imaging.ImageFormat.Png);
                 stream.Seek(0, SeekOrigin.Begin);
-                await channel.SendMessageAsync(new LocalAttachment(stream, "data.png"));
+                using (var attachment = new LocalAttachment(stream, "data.png"))
+                {
+                    await channel.SendMessageAsync(attachment);
+                }
             }
         }
 
