@@ -12,6 +12,7 @@ namespace Causym.Modules.Translation
     /// Translate module, handles configuration and translation of messages.
     /// </summary>
     [Group("Translate", "T")]
+    [ModuleButton("🌐")]
     public class TranslateModule : DiscordModuleBase
     {
         /// <summary>

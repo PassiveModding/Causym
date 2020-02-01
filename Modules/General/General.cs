@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Causym.Services.Help;
 using Disqord;
 using Disqord.Bot;
+using Disqord.Extensions.Interactivity.Menus;
 using Qmmands;
 
 namespace Causym.Modules.General
@@ -42,13 +43,7 @@ namespace Causym.Modules.General
         [Command("Help")]
         public async Task HelpAsync()
         {
-            var rnd = new Random();
-            foreach (var module in CmdService.GetAllModules())
-            {
-                var builder = HelpService.GetModuleHelp(module);
-                builder.Color = new Color((float)rnd.Next(0, 254) / 255, (float)rnd.Next(0, 254) / 255, (float)rnd.Next(0, 254) / 255);
-                await ReplyAsync("", false, builder.Build());
-            }
+            await Context.Channel.StartMenuAsync(new HelpService.HelpMenu(CmdService));
         }
     }
 }

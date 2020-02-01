@@ -1,10 +1,12 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
+using Causym.Services.Help;
 using Disqord.Bot;
 using Qmmands;
 
 namespace Causym.Modules.Configure
 {
+    [ModuleButton("🛠️")]
     public class Config : DiscordModuleBase
     {
         [Command("SetPrefix")]

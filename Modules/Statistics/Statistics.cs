@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Causym.Services.Help;
 using Disqord;
 using Disqord.Bot;
 using Qmmands;
@@ -11,6 +12,7 @@ namespace Causym.Modules.Statistics
 {
     [Group("Statistics", "s")]
     [GuildOnly]
+    [ModuleButton("📊")]
     public class Statistics : DiscordModuleBase
     {
         [Command("SetSnapshots")]
