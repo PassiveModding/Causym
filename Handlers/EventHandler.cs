@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
+using Disqord;
 using Disqord.Bot.Sharding;
 using Disqord.Events;
 using Qmmands;
@@ -83,7 +84,16 @@ namespace Causym
 
         private Task Bot_MessageReceived(MessageReceivedEventArgs e)
         {
-            Logger.Log(e.Message.Content, Logger.Source.Bot);
+            if (e.Message is CachedUserMessage cM)
+            {
+                Logger.Log("Message: " + cM.Content + (cM.Embeds.Count > 0 ? cM.Embeds.Count + " Embed(s)" : ""), Logger.Source.Bot);
+
+            }
+            else
+            {
+                Logger.Log("Message: " + e.Message.Content, Logger.Source.Bot);
+            }
+
             return Task.CompletedTask;
         }
     }
