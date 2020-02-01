@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Causym.Services;
 using Disqord;
 using Disqord.Bot;
 using Disqord.Events;
@@ -12,6 +13,7 @@ namespace Causym.Modules.Translation
     /// <summary>
     /// Contains general methods, properties and fields for the translate service.
     /// </summary>
+    [Service]
     public partial class TranslateService
     {
         private readonly YandexTranslator translator;
@@ -39,7 +41,7 @@ namespace Causym.Modules.Translation
             bot.ReactionAdded += ReactionAddedAsync;
         }
 
-        public static List<TranslationSet> DefaultMap { get; set; } =
+        public static readonly List<TranslationSet> DefaultMap =
             new List<TranslationSet>
             {
                         new TranslationSet { EmoteMatches = new List<string> { "🇦🇺", "🇺🇸", "🇪🇺", "🇳🇿" }, LanguageString = "en" },
@@ -68,7 +70,7 @@ namespace Causym.Modules.Translation
             return translator.IsValidLanguageCode(code);
         }
 
-        public TranslationSet GetCode(string reaction)
+        public static TranslationSet GetCode(string reaction)
         {
             var languageType = DefaultMap.FirstOrDefault(x => x.EmoteMatches.Any(val => val == reaction));
             if (languageType == null)

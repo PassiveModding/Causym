@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Net.Http;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -16,7 +17,6 @@ namespace Causym
     public class Program
     {
         private readonly Logger logger = new Logger();
-        private Config config;
 
         public static void Main(string[] args = null)
         {
@@ -25,7 +25,7 @@ namespace Causym
 
         public async Task RunAsync(string[] args = null)
         {
-            ParseArguments(args);
+            var config = ParseArguments(args);
 
             using (var db = new DataContext())
             {
@@ -34,18 +34,23 @@ namespace Causym
                 await db.SaveChangesAsync();
             }
 
+
+            IServiceCollection botServiceCollection = new ServiceCollection();
+            foreach (var type in Extensions.GetServices(Assembly.GetEntryAssembly()))
+            {
+                botServiceCollection = botServiceCollection.AddSingleton(type);
+            }
+
             var bot = new DiscordBotSharder(TokenType.Bot, config.Entries[Config.Defaults.Token.ToString()], new DatabasePrefixProvider(config.Entries[Config.Defaults.Prefix.ToString()]), new DiscordBotConfiguration
             {
-                ProviderFactory = bot => new ServiceCollection()
-                    .AddSingleton(new Modules.Translation.TranslateService(bot, config, logger))
+                ProviderFactory = bot => botServiceCollection
                     .AddDbContext<DataContext>(ServiceLifetime.Transient)
                     .AddSingleton(bot)
                     .AddSingleton(config)
                     .AddSingleton(logger)
-                    .AddSingleton(new Modules.Translation.TranslateService(bot, config, logger))
-                    .AddSingleton(new Modules.Statistics.StatisticsService(bot))
                     .BuildServiceProvider()
             });
+
             var client = new HttpClient();
             bot.AddTypeParser(new IEmojiParser(client));
             await bot.AddExtensionAsync(new InteractivityExtension());
@@ -54,8 +59,9 @@ namespace Causym
             await bot.RunAsync();
         }
 
-        public void ParseArguments(string[] args = null)
+        public Config ParseArguments(string[] args = null)
         {
+            Config config = null;
             if (args != null)
             {
                 Parser.Default.ParseArguments<Options>(args)
@@ -63,11 +69,10 @@ namespace Causym
                     {
                         config = Config.LoadFromFile(o.ConfigPath);
                     });
+
             }
-            else
-            {
-                config = Config.LoadFromFile(null);
-            }
+
+            config ??= Config.LoadFromFile(null);
 
             if (!config.Entries.ContainsKey(Config.Defaults.Token.ToString()))
             {
@@ -82,6 +87,8 @@ namespace Causym
                 config.Entries[Config.Defaults.Prefix.ToString()] = Console.ReadLine();
                 config.Save();
             }
+
+            return config;
         }
     }
 }

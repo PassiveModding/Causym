@@ -3,17 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Causym.Services;
 using Disqord.Events;
 
 namespace Causym.Modules.Statistics
 {
+    [Service]
     public partial class StatisticsService
     {
         public Timer SnapshotTimer { get; }
 
-        public Dictionary<ulong, Dictionary<ulong, int>> GuildMessageTracker { get; set; } = new Dictionary<ulong, Dictionary<ulong, int>>();
+        public Dictionary<ulong, Dictionary<ulong, int>> GuildMessageTracker { get; } = new Dictionary<ulong, Dictionary<ulong, int>>();
 
-        public HashSet<ulong> SnapshotEnabledCache { get; set; } = new HashSet<ulong>();
+        public HashSet<ulong> SnapshotEnabledCache { get; internal set; } = new HashSet<ulong>();
 
         private Task Bot_MessageReceived(MessageReceivedEventArgs e)
         {
