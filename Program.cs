@@ -34,7 +34,6 @@ namespace Causym
                 await db.SaveChangesAsync();
             }
 
-
             IServiceCollection botServiceCollection = new ServiceCollection();
             foreach (var type in Extensions.GetServices(Assembly.GetEntryAssembly()))
             {
@@ -49,7 +48,6 @@ namespace Causym
                     .AddSingleton(config)
                     .AddSingleton(logger)
                     .BuildServiceProvider()
-                
             });
 
             var client = new HttpClient();
@@ -70,7 +68,6 @@ namespace Causym
                     {
                         config = Config.LoadFromFile(o.ConfigPath);
                     });
-
             }
 
             config ??= Config.LoadFromFile(null);

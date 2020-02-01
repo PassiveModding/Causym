@@ -16,6 +16,21 @@ namespace Causym.Modules.Translation
     [Service]
     public partial class TranslateService
     {
+        public static readonly List<TranslationSet> DefaultMap =
+            new List<TranslationSet>
+            {
+                        new TranslationSet { EmoteMatches = new List<string> { "🇦🇺", "🇺🇸", "🇪🇺", "🇳🇿" }, LanguageString = "en" },
+                        new TranslationSet { EmoteMatches = new List<string> { "🇭🇺" }, LanguageString = "hu" },
+                        new TranslationSet { EmoteMatches = new List<string> { "🇫🇷" }, LanguageString = "fr" },
+                        new TranslationSet { EmoteMatches = new List<string> { "🇫🇮" }, LanguageString = "fi" },
+                        new TranslationSet { EmoteMatches = new List<string> { "🇲🇽", "🇪🇸", "🇨🇴", "🇦🇷" }, LanguageString = "es" },
+                        new TranslationSet { EmoteMatches = new List<string> { "🇧🇷", "🇵🇹", "🇲🇿", "🇦🇴" }, LanguageString = "pt" },
+                        new TranslationSet { EmoteMatches = new List<string> { "🇩🇪", "🇦🇹", "🇨🇭", "🇧🇪", "🇱🇺", "🇱🇮" }, LanguageString = "de" },
+                        new TranslationSet { EmoteMatches = new List<string> { "🇮🇹", "🇨🇭", "🇸🇲", "🇻🇦" }, LanguageString = "it" },
+                        new TranslationSet { EmoteMatches = new List<string> { "🇨🇳", "🇸🇬", "🇹🇼" }, LanguageString = "zh" },
+                        new TranslationSet { EmoteMatches = new List<string> { "🇯🇵" }, LanguageString = "ja" }
+            };
+
         private readonly YandexTranslator translator;
 
         /// <summary>
@@ -41,34 +56,9 @@ namespace Causym.Modules.Translation
             bot.ReactionAdded += ReactionAddedAsync;
         }
 
-        public static readonly List<TranslationSet> DefaultMap =
-            new List<TranslationSet>
-            {
-                        new TranslationSet { EmoteMatches = new List<string> { "🇦🇺", "🇺🇸", "🇪🇺", "🇳🇿" }, LanguageString = "en" },
-                        new TranslationSet { EmoteMatches = new List<string> { "🇭🇺" }, LanguageString = "hu" },
-                        new TranslationSet { EmoteMatches = new List<string> { "🇫🇷" }, LanguageString = "fr" },
-                        new TranslationSet { EmoteMatches = new List<string> { "🇫🇮" }, LanguageString = "fi" },
-                        new TranslationSet { EmoteMatches = new List<string> { "🇲🇽", "🇪🇸", "🇨🇴", "🇦🇷" }, LanguageString = "es" },
-                        new TranslationSet { EmoteMatches = new List<string> { "🇧🇷", "🇵🇹", "🇲🇿", "🇦🇴" }, LanguageString = "pt" },
-                        new TranslationSet { EmoteMatches = new List<string> { "🇩🇪", "🇦🇹", "🇨🇭", "🇧🇪", "🇱🇺", "🇱🇮" }, LanguageString = "de" },
-                        new TranslationSet { EmoteMatches = new List<string> { "🇮🇹", "🇨🇭", "🇸🇲", "🇻🇦" }, LanguageString = "it" },
-                        new TranslationSet { EmoteMatches = new List<string> { "🇨🇳", "🇸🇬", "🇹🇼" }, LanguageString = "zh" },
-                        new TranslationSet { EmoteMatches = new List<string> { "🇯🇵" }, LanguageString = "ja" }
-            };
-
         public Config Config { get; }
 
         public Logger Logger { get; }
-
-        public SpecificCulture[] GetAvailableLanguages()
-        {
-            return translator.GetAvailableLanguages();
-        }
-
-        public bool IsValidLanguageCode(string code)
-        {
-            return translator.IsValidLanguageCode(code);
-        }
 
         public static TranslationSet GetCode(string reaction)
         {
@@ -79,6 +69,16 @@ namespace Causym.Modules.Translation
             }
 
             return languageType;
+        }
+
+        public SpecificCulture[] GetAvailableLanguages()
+        {
+            return translator.GetAvailableLanguages();
+        }
+
+        public bool IsValidLanguageCode(string code)
+        {
+            return translator.IsValidLanguageCode(code);
         }
 
         private async Task ReactionAddedAsync(ReactionAddedEventArgs e)
