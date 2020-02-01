@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using Disqord.Bot.Sharding;
 using Disqord.Events;
 using Qmmands;
@@ -30,13 +31,22 @@ namespace Causym
         /// </summary>
         public void Initialize()
         {
+            Bot.ShardReady += Bot_ShardReady;
             Bot.Ready += ReadyAsync;
             Bot.CommandExecuted += CommandExecutedAsync;
             Bot.CommandExecutionFailed += CommandExecutionFailedAsync;
 
-            // Bot.MessageReceived += Bot_MessageReceived;
+#if DEBUG
+            Bot.MessageReceived += Bot_MessageReceived;
             // Bot.Logger.MessageLogged += Logger_MessageLogged;
-            Logger.Log($"Initialized", Logger.Source.Bot);
+#endif
+        }
+
+        private Task Bot_ShardReady(Disqord.Sharding.ShardReadyEventArgs e)
+        {
+            Logger.Log($"Shard {e.Shard.Id} Ready, Guilds: {e.Shard.Guilds.Count}", Logger.Source.Bot);
+            e.Shard.SetPresenceAsync(new Disqord.LocalActivity("?help", Disqord.ActivityType.Watching));
+            return Task.CompletedTask;
         }
 
         private void Logger_MessageLogged(object sender, Disqord.Logging.MessageLoggedEventArgs e)
@@ -58,15 +68,16 @@ namespace Causym
 
         private Task ReadyAsync(ReadyEventArgs e)
         {
-            /*if (e is ShardReadyEventArgs s)
+            if (Bot.Shards.Count != 0)
             {
-                Logger.Log($"Shard {s.ShardId} Ready", Logger.Source.Bot);
+                Logger.Log($"All Shards Ready ({string.Join(',', Bot.Shards.Select(x => x.Id))})", Logger.Source.Bot);
             }
             else
-            {*/
-            Logger.Log($"Ready", Logger.Source.Bot);
-            Logger.Log($"Guilds: {e.Client.Guilds.Count}", Logger.Source.Bot);
-            Bot.SetPresenceAsync(new Disqord.LocalActivity("?help", Disqord.ActivityType.Watching));
+            {
+                Logger.Log($"All Shards Ready", Logger.Source.Bot);
+            }
+
+            Logger.Log($"Total Guilds: {e.Client.Guilds.Count}", Logger.Source.Bot);
             return Task.CompletedTask;
         }
 

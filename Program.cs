@@ -41,7 +41,7 @@ namespace Causym
                 botServiceCollection = botServiceCollection.AddSingleton(type);
             }
 
-            var bot = new DiscordBotSharder(TokenType.Bot, config.Entries[Config.Defaults.Token.ToString()], new DatabasePrefixProvider(config.Entries[Config.Defaults.Prefix.ToString()]), new DiscordBotConfiguration
+            var bot = new DiscordBotSharder(TokenType.Bot, config.Entries[Config.Defaults.Token.ToString()], new DatabasePrefixProvider(config.Entries[Config.Defaults.Prefix.ToString()]), new DiscordBotSharderConfiguration
             {
                 ProviderFactory = bot => botServiceCollection
                     .AddDbContext<DataContext>(ServiceLifetime.Transient)
@@ -49,6 +49,7 @@ namespace Causym
                     .AddSingleton(config)
                     .AddSingleton(logger)
                     .BuildServiceProvider()
+                
             });
 
             var client = new HttpClient();
