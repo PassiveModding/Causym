@@ -9,6 +9,8 @@ namespace Causym.Modules.Translation
 {
     public class YandexTranslator
     {
+        private SpecificCulture[] availableLanguages;
+
         public YandexTranslator(string apiKey)
         {
             Client = new HttpClient();
@@ -22,11 +24,9 @@ namespace Causym.Modules.Translation
 
         public string ApiKey { get; }
 
-        private SpecificCulture[] AvailableLanguages;
-
         public bool IsValidLanguageCode(string code)
         {
-            if (AvailableLanguages.All(x => !x.BaseCulture.Name.Equals(code, StringComparison.InvariantCultureIgnoreCase) && !x.SpecificName.Equals(code, StringComparison.InvariantCultureIgnoreCase)))
+            if (availableLanguages.All(x => !x.BaseCulture.Name.Equals(code, StringComparison.InvariantCultureIgnoreCase) && !x.SpecificName.Equals(code, StringComparison.InvariantCultureIgnoreCase)))
             {
                 return false;
             }
@@ -36,7 +36,7 @@ namespace Causym.Modules.Translation
 
         public SpecificCulture[] GetAvailableLanguages()
         {
-            return AvailableLanguages;
+            return availableLanguages;
         }
 
         public TranslationResult TranslateText(string source, string targetLanguage)
@@ -110,7 +110,7 @@ namespace Causym.Modules.Translation
             var response = Client.GetAsync($"https://translate.yandex.net/api/v1.5/tr.json/getLangs?key={ApiKey}&ui=en").GetAwaiter().GetResult();
             if (!response.IsSuccessStatusCode)
             {
-                AvailableLanguages = Array.Empty<SpecificCulture>();
+                availableLanguages = Array.Empty<SpecificCulture>();
             }
 
             var jResponse = JToken.Parse(response.Content.ReadAsStringAsync().Result);
@@ -128,7 +128,7 @@ namespace Causym.Modules.Translation
                 }
             }
 
-            AvailableLanguages = cultureInfos.ToArray();
+            availableLanguages = cultureInfos.ToArray();
         }
     }
 }

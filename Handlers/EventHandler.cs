@@ -39,7 +39,6 @@ namespace Causym
 
 #if DEBUG
             Bot.MessageReceived += Bot_MessageReceived;
-            // Bot.Logger.MessageLogged += Logger_MessageLogged;
 #endif
         }
 
@@ -52,7 +51,7 @@ namespace Causym
 
         private void Logger_MessageLogged(object sender, Disqord.Logging.MessageLoggedEventArgs e)
         {
-            Logger.Log(e.Message, Logger.Source.Bot);
+            Logger.Log(e.Message, Logger.Source.Bot, Logger.LogLevel.Verbose);
         }
 
         private Task CommandExecutionFailedAsync(CommandExecutionFailedEventArgs e)
@@ -86,12 +85,11 @@ namespace Causym
         {
             if (e.Message is CachedUserMessage cM)
             {
-                Logger.Log("Message: " + cM.Content + (cM.Embeds.Count > 0 ? cM.Embeds.Count + " Embed(s)" : ""), Logger.Source.Bot);
-
+                Logger.Log("Message: " + cM.Content + (cM.Embeds.Count > 0 ? cM.Embeds.Count + " Embed(s)" : ""), Logger.Source.Bot, Logger.LogLevel.Debug);
             }
             else
             {
-                Logger.Log("Message: " + e.Message.Content, Logger.Source.Bot);
+                Logger.Log("Message: " + e.Message.Content, Logger.Source.Bot, Logger.LogLevel.Debug);
             }
 
             return Task.CompletedTask;
