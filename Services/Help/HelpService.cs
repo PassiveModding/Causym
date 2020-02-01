@@ -11,53 +11,6 @@ namespace Causym.Services.Help
 {
     public class HelpService
     {
-        public class HelpMenu : MenuBase
-        {
-            private Dictionary<string, Module> pages = new Dictionary<string, Module>();
-
-            public HelpMenu(CommandService commandService)
-            {
-                CommandService = commandService;
-            }
-
-            public CommandService CommandService { get; }
-
-            protected override async Task<IUserMessage> InitialiseAsync()
-            {
-                foreach (var module in CommandService.GetAllModules())
-                {
-                    var attMatch = module.Attributes.FirstOrDefault(x => x.GetType().Equals(typeof(ModuleButtonAttribute))) as ModuleButtonAttribute;
-                    if (attMatch == null) continue;
-                    if (!pages.TryAdd(attMatch.ButtonCode, module))
-                    {
-                        // TODO: warn about module being ignored due to duplicate button.
-                    }
-                }
-
-                var homePage = new LocalEmbedBuilder().WithTitle("Modules");
-                foreach (var page in pages)
-                {
-                    homePage.AddField(new LocalEmbedFieldBuilder
-                    {
-                        Name = $"{page.Key} " + page.Value.Name,
-                        Value = string.Join(", ", page.Value.Commands.Select(c => '`' + c.Name + '`'))
-                    });
-                }
-
-                var message = await Channel.SendMessageAsync("", false, homePage.Build());
-
-                foreach (var page in pages)
-                {
-                    await AddButtonAsync(new Button(new LocalEmoji(page.Key), x =>
-                    {
-                        return Message.ModifyAsync(m => m.Embed = GetModuleHelp(page.Value).Build());
-                    }));
-                }
-
-                return message;
-            }
-        }
-
         public static LocalEmbedBuilder GetModuleHelp(Module module)
         {
             if (module.Commands.Count <= 25)

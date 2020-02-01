@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 using Causym.Services;
+using Disqord;
 
 namespace Causym
 {
@@ -26,6 +27,23 @@ namespace Causym
                     yield return type;
                 }
             }
+        }
+
+        public static Color? ColorConvert(string colorHex)
+        {
+            if (!colorHex.StartsWith('#'))
+            {
+                colorHex = "#" + colorHex;
+            }
+
+            if (colorHex.Length != 7)
+            {
+                return null;
+            }
+
+            var sysColor = System.Drawing.ColorTranslator.FromHtml(colorHex);
+            var disColor = new Color(sysColor.R, sysColor.G, sysColor.B);
+            return disColor;
         }
     }
 }

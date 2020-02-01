@@ -6,7 +6,7 @@ using Qmmands;
 
 namespace Causym.Modules.Configure
 {
-    [ModuleButton("🛠️")]
+    [HelpMetadata("🛠️")]
     public class Config : DiscordModuleBase
     {
         [Command("SetPrefix")]

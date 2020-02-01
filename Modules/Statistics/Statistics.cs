@@ -12,7 +12,7 @@ namespace Causym.Modules.Statistics
 {
     [Group("Statistics", "s")]
     [GuildOnly]
-    [ModuleButton("📊")]
+    [HelpMetadata("📊")]
     public class Statistics : DiscordModuleBase
     {
         [Command("SetSnapshots")]

@@ -43,7 +43,7 @@ namespace Causym.Modules.General
         [Command("Help")]
         public async Task HelpAsync()
         {
-            await Context.Channel.StartMenuAsync(new HelpService.HelpMenu(CmdService));
+            await Context.Channel.StartMenuAsync(new HelpMenu(CmdService));
         }
     }
 }
