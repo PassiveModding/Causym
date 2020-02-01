@@ -50,7 +50,7 @@ namespace Causym.Services.Help
                 {
                     await AddButtonAsync(new Button(new LocalEmoji(page.Key), x =>
                     {
-                        return (Message as RestUserMessage).ModifyAsync(m => m.Embed = GetModuleHelp(page.Value).Build());
+                        return Message.ModifyAsync(m => m.Embed = GetModuleHelp(page.Value).Build());
                     }));
                 }
 
