@@ -16,6 +16,7 @@ namespace Causym.Modules.Statistics
     public class Statistics : DiscordModuleBase
     {
         [Command("SetSnapshots")]
+        [RequireMemberGuildPermissions(Disqord.Permission.Administrator)]
         public async Task SetSnapshotsAsync(bool? enabled = null)
         {
             using (var db = new DataContext())
