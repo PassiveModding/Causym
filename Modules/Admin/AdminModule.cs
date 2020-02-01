@@ -5,7 +5,8 @@ using Qmmands;
 namespace Causym.Modules.Admin
 {
     [BotOwnerOnly]
-    public class Admin : DiscordModuleBase
+    [Group("Admin")]
+    public class AdminModule : DiscordModuleBase
     {
         [Command("SetUsername")]
         [Description("Sets the bot's display username")]
