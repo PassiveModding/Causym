@@ -82,9 +82,9 @@ namespace Causym.Modules.Statistics
                             {
                                 GuildId = config.GuildId,
                                 MemberCount = guild.MemberCount,
-                                MembersDND = guild.Members.Count(x => x.Value.Presence.Status == Disqord.UserStatus.DoNotDisturb),
-                                MembersIdle = guild.Members.Count(x => x.Value.Presence.Status == Disqord.UserStatus.Idle),
-                                MembersOnline = guild.Members.Count(x => x.Value.Presence.Status == Disqord.UserStatus.Online),
+                                MembersDND = guild.Members.Count(x => x.Value?.Presence?.Status == Disqord.UserStatus.DoNotDisturb),
+                                MembersIdle = guild.Members.Count(x => x.Value?.Presence?.Status == Disqord.UserStatus.Idle),
+                                MembersOnline = guild.Members.Count(x => x.Value?.Presence?.Status == Disqord.UserStatus.Online),
                                 SnapshotTime = time,
 
                                 TotalMessageCount = messageCount
