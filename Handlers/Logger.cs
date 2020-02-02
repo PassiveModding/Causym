@@ -9,7 +9,8 @@ namespace Causym
             Info,
             Error,
             Verbose,
-            Debug
+            Debug,
+            Warn
         }
 
         public enum Source

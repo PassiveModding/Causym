@@ -36,7 +36,9 @@ namespace Causym
 
             IServiceCollection botServiceCollection = new ServiceCollection()
                 .AddSingleton<HttpClient>();
-            foreach (var type in Extensions.GetServices(Assembly.GetEntryAssembly()))
+
+            var services = Extensions.GetServices(Assembly.GetEntryAssembly());
+            foreach (var type in services)
             {
                 botServiceCollection = botServiceCollection.AddSingleton(type);
             }
@@ -53,6 +55,13 @@ namespace Causym
 
             bot.AddTypeParser(new IEmojiParser(bot.GetRequiredService<HttpClient>()));
             await bot.AddExtensionAsync(new InteractivityExtension());
+
+            foreach (var type in services)
+            {
+                var service = bot.GetService(type);
+                if (service == null) logger.Log($"Service of type {type.Name} not found in bot service provider despite being marked with a service attribute", Logger.Source.Bot, Logger.LogLevel.Warn);
+            }
+
             new EventHandler(bot, logger).Initialize();
             bot.AddModules(Assembly.GetEntryAssembly());
             await bot.RunAsync();
