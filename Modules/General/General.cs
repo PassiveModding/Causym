@@ -1,22 +1,28 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Causym.Services.Help;
 using Disqord;
 using Disqord.Bot;
 using Disqord.Extensions.Interactivity.Menus;
+using Newtonsoft.Json.Linq;
 using Qmmands;
 
 namespace Causym.Modules.General
 {
     public class General : DiscordModuleBase
     {
-        public General(CommandService cmdService)
+        public General(CommandService cmdService, HttpClient httpClient)
         {
             CmdService = cmdService;
+            HttpClient = httpClient;
         }
 
         public CommandService CmdService { get; }
+
+        public HttpClient HttpClient { get; }
 
         [Command("Avatar")]
         public async Task AvatarAsync(CachedUser user = null)
@@ -44,6 +50,81 @@ namespace Causym.Modules.General
         public async Task HelpAsync()
         {
             await Context.Channel.StartMenuAsync(new HelpMenu(CmdService));
+        }
+
+        [Command("Invite")]
+        public async Task InviteAsync()
+        {
+            await ReplyAsync("", false, new LocalEmbedBuilder().WithColor(Color.DarkSlateGray).WithDescription($"https://discordapp.com/oauth2/authorize?client_id={Context.Bot.CurrentUser.Id}&scope=bot&permissions={Constants.BotPermissionLevel}").Build());
+        }
+
+        [Command("Stats")]
+        public async Task StatsAsync()
+        {
+            string changes;
+            var request = new HttpRequestMessage(HttpMethod.Get, Constants.GithubApiCommitUrl);
+            request.Headers.Add("User-Agent", "Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.2; WOW64; Trident/6.0)");
+            var response = await HttpClient.SendAsync(request);
+            if (!response.IsSuccessStatusCode)
+            {
+                changes = "There was an error fetching the latest changes.";
+            }
+            else
+            {
+                dynamic result = JArray.Parse(await response.Content.ReadAsStringAsync());
+                changes = $"[{((string)result[0].sha).Substring(0, 7)}]({result[0].html_url}) {result[0].commit.message}\n" + $"[{((string)result[1].sha).Substring(0, 7)}]({result[1].html_url}) {result[1].commit.message}\n" + $"[{((string)result[2].sha).Substring(0, 7)}]({result[2].html_url}) {result[2].commit.message}";
+            }
+
+            var embed = new LocalEmbedBuilder();
+
+            embed.WithAuthor(
+                x =>
+                {
+                    x.IconUrl = Context.Bot.CurrentUser.GetAvatarUrl();
+                    x.Name = $"{Context.Bot.CurrentUser.Name}'s Official Invite";
+                    x.Url = $"https://discordapp.com/oauth2/authorize?client_id={Context.Bot.CurrentUser.Id}&scope=bot&permissions={Constants.BotPermissionLevel}";
+                });
+            embed.AddField("Changes", changes.FixLength());
+
+            embed.AddField(
+                "Members",
+                $"Bot: {Context.Bot.Guilds.Sum(x => x.Value.Members.Count(z => z.Value.IsBot))}\n" +
+                $"Human: {Context.Bot.Guilds.Sum(x => x.Value.Members.Count(z => !z.Value.IsBot))}\n" +
+                $"Present: {Context.Bot.Guilds.Sum(x => x.Value.Members.Count(u => u.Value.Presence.Status != UserStatus.Offline))}",
+                true);
+            embed.AddField(
+                "Members",
+                $"Online: {Context.Bot.Guilds.Sum(x => x.Value.Members.Count(z => z.Value.Presence.Status == UserStatus.Online))}\n" +
+                $"AFK: {Context.Bot.Guilds.Sum(x => x.Value.Members.Count(z => z.Value.Presence.Status == UserStatus.Idle))}\n" +
+                $"DND: {Context.Bot.Guilds.Sum(x => x.Value.Members.Count(z => z.Value.Presence.Status == UserStatus.DoNotDisturb))}",
+                true);
+            embed.AddField(
+                "Channels",
+                $"Text: {Context.Bot.Guilds.Sum(x => x.Value.TextChannels.Count)}\n" +
+                $"Voice: {Context.Bot.Guilds.Sum(x => x.Value.VoiceChannels.Count)}\n" +
+                $"Total: {Context.Bot.Guilds.Sum(x => x.Value.Channels.Count)}",
+                true);
+            embed.AddField(
+                "Guilds",
+                $"Count: {Context.Bot.Guilds.Count}\n" +
+                $"Total Users: {Context.Bot.Guilds.Sum(x => x.Value.MemberCount)}\n" +
+                $"Total Cached: {Context.Bot.Guilds.Sum(x => x.Value.Members.Count)}\n",
+                true);
+
+            embed.AddField(
+                "Commands",
+                $"Commands: {CmdService.GetAllCommands().Count()}\n" +
+                $"Aliases: {CmdService.GetAllCommands().Sum(x => x.Aliases.Count)}\n" +
+                $"Modules: {CmdService.GetAllModules().Count()}",
+                true);
+            embed.AddField(
+                ":hammer_pick:",
+                $"Heap: {Math.Round(GC.GetTotalMemory(true) / (1024.0 * 1024.0), 2)} MB\n" +
+                $"Up: {(DateTime.Now - Process.GetCurrentProcess().StartTime).ToString(@"dd\D\ hh\H\ mm\M\ ss\S")}",
+                true);
+            embed.AddField(":beginner:", $"Written by: [PassiveModding](https://github.com/PassiveModding)", true);
+
+            await ReplyAsync("", false, embed.Build());
         }
     }
 }

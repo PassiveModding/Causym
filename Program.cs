@@ -34,7 +34,8 @@ namespace Causym
                 await db.SaveChangesAsync();
             }
 
-            IServiceCollection botServiceCollection = new ServiceCollection();
+            IServiceCollection botServiceCollection = new ServiceCollection()
+                .AddSingleton<HttpClient>();
             foreach (var type in Extensions.GetServices(Assembly.GetEntryAssembly()))
             {
                 botServiceCollection = botServiceCollection.AddSingleton(type);
@@ -50,8 +51,7 @@ namespace Causym
                     .BuildServiceProvider()
             });
 
-            var client = new HttpClient();
-            bot.AddTypeParser(new IEmojiParser(client));
+            bot.AddTypeParser(new IEmojiParser(bot.GetRequiredService<HttpClient>()));
             await bot.AddExtensionAsync(new InteractivityExtension());
             new EventHandler(bot, logger).Initialize();
             bot.AddModules(Assembly.GetEntryAssembly());
