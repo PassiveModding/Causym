@@ -88,15 +88,15 @@ namespace Causym.Modules.General
 
             embed.AddField(
                 "Members",
-                $"Bot: {Context.Bot.Guilds.Sum(x => x.Value.Members.Count(z => z.Value.IsBot))}\n" +
-                $"Human: {Context.Bot.Guilds.Sum(x => x.Value.Members.Count(z => !z.Value.IsBot))}\n" +
-                $"Present: {Context.Bot.Guilds.Sum(x => x.Value.Members.Count(u => u.Value.Presence.Status != UserStatus.Offline))}",
+                $"Bot: {Context.Bot.Guilds.Sum(x => x.Value.Members.Count(z => z.Value?.IsBot == true))}\n" +
+                $"Human: {Context.Bot.Guilds.Sum(x => x.Value.Members.Count(z => z.Value?.IsBot == false))}\n" +
+                $"Present: {Context.Bot.Guilds.Sum(x => x.Value.Members.Count(u => u.Value?.Presence?.Status != UserStatus.Offline))}",
                 true);
             embed.AddField(
                 "Members",
-                $"Online: {Context.Bot.Guilds.Sum(x => x.Value.Members.Count(z => z.Value.Presence.Status == UserStatus.Online))}\n" +
-                $"AFK: {Context.Bot.Guilds.Sum(x => x.Value.Members.Count(z => z.Value.Presence.Status == UserStatus.Idle))}\n" +
-                $"DND: {Context.Bot.Guilds.Sum(x => x.Value.Members.Count(z => z.Value.Presence.Status == UserStatus.DoNotDisturb))}",
+                $"Online: {Context.Bot.Guilds.Sum(x => x.Value.Members.Count(z => z.Value?.Presence?.Status == UserStatus.Online))}\n" +
+                $"AFK: {Context.Bot.Guilds.Sum(x => x.Value.Members.Count(z => z.Value?.Presence?.Status == UserStatus.Idle))}\n" +
+                $"DND: {Context.Bot.Guilds.Sum(x => x.Value.Members.Count(z => z.Value?.Presence?.Status == UserStatus.DoNotDisturb))}",
                 true);
             embed.AddField(
                 "Channels",
