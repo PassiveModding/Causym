@@ -81,19 +81,17 @@ namespace Causym
 
             config ??= Config.LoadFromFile(null);
 
-            if (!config.Entries.ContainsKey(Config.Defaults.Token.ToString()))
+            config.GetOrAddEntry(Config.Defaults.Token.ToString(), () =>
             {
                 logger.Log($"Please input bot token, can be found at: {Constants.DeveloperApplicationLink}", Logger.Source.Bot);
-                config.Entries[Config.Defaults.Token.ToString()] = Console.ReadLine();
-                config.Save();
-            }
+                return Console.ReadLine();
+            });
 
-            if (!config.Entries.ContainsKey(Config.Defaults.Prefix.ToString()))
+            config.GetOrAddEntry(Config.Defaults.Prefix.ToString(), () =>
             {
                 logger.Log($"Please input bot default prefix:", Logger.Source.Bot);
-                config.Entries[Config.Defaults.Prefix.ToString()] = Console.ReadLine();
-                config.Save();
-            }
+                return Console.ReadLine();
+            });
 
             return config;
         }

@@ -47,6 +47,17 @@ namespace Causym
             File.WriteAllText(savePath, JsonConvert.SerializeObject(this, Formatting.Indented));
         }
 
+        public string GetOrAddEntry(string key, Func<string> generationMethod)
+        {
+            if (!Entries.ContainsKey(key))
+            {
+                Entries.Add(key, generationMethod());
+                Save();
+            }
+
+            return Entries[key];
+        }
+
         private static Config GenerateAndSaveDefaultConfig(string path)
         {
             savePath = path;

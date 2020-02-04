@@ -44,16 +44,11 @@ namespace Causym.Modules.Translation
         {
             Config = config;
             Logger = logger;
-            if (!Config.Entries.ContainsKey("YandexKey"))
+            translator = new YandexTranslator(Config.GetOrAddEntry("YandexKey", () =>
             {
                 logger.Log("Enter Yandex api key", "TRANSLATE", Logger.LogLevel.Info);
-                var key = Console.ReadLine();
-                Config.Entries.Add("YandexKey", key);
-                Config.Save();
-            }
-
-            var apiKey = Config.Entries["YandexKey"];
-            translator = new YandexTranslator(apiKey);
+                return Console.ReadLine();
+            }));
             bot.ReactionAdded += ReactionAddedAsync;
         }
 
