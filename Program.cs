@@ -47,7 +47,8 @@ namespace Causym
             {
                 ProviderFactory = bot => botServiceCollection
                     .AddDbContext<DataContext>(ServiceLifetime.Transient)
-                    .AddSingleton(bot)
+                    //.AddSingleton(bot)
+                    .AddSingleton(bot as DiscordBotSharder)
                     .AddSingleton(config)
                     .AddSingleton(logger)
                     .BuildServiceProvider()
@@ -62,7 +63,6 @@ namespace Causym
                 if (service == null) logger.Log($"Service of type {type.Name} not found in bot service provider despite being marked with a service attribute", Logger.Source.Bot, Logger.LogLevel.Warn);
             }
 
-            new EventHandler(bot, logger).Initialize();
             bot.AddModules(Assembly.GetEntryAssembly());
             await bot.RunAsync();
         }

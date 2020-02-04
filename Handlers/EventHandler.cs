@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
+using Causym.Services;
 using Disqord;
 using Disqord.Bot.Sharding;
 using Disqord.Events;
@@ -10,6 +11,7 @@ namespace Causym
     /// <summary>
     /// Causym eventhandler, handles initial subscriptions to events for logging purposes.
     /// </summary>
+    [Service]
     public class EventHandler
     {
         /// <summary>
@@ -21,17 +23,7 @@ namespace Causym
         {
             Bot = bot;
             Logger = logger;
-        }
 
-        private DiscordBotSharder Bot { get; }
-
-        private Logger Logger { get; }
-
-        /// <summary>
-        /// Subscribes the classes event handlers.
-        /// </summary>
-        public void Initialize()
-        {
             Bot.ShardReady += Bot_ShardReady;
             Bot.Ready += ReadyAsync;
             Bot.CommandExecuted += CommandExecutedAsync;
@@ -41,6 +33,10 @@ namespace Causym
             Bot.MessageReceived += Bot_MessageReceived;
 #endif
         }
+
+        private DiscordBotSharder Bot { get; }
+
+        private Logger Logger { get; }
 
         private Task Bot_ShardReady(Disqord.Sharding.ShardReadyEventArgs e)
         {

@@ -13,7 +13,7 @@ namespace Causym.Modules.Statistics
     {
         private readonly Dictionary<ulong, (ulong ChannelId, int MemberCount)> updateQueue = new Dictionary<ulong, (ulong ChannelId, int MemberCount)>();
 
-        public StatisticsService(DiscordBotBase bot)
+        public StatisticsService(DiscordBotSharder bot)
         {
             using (var db = new DataContext())
             {
@@ -34,7 +34,7 @@ namespace Causym.Modules.Statistics
 #endif
         }
 
-        public DiscordBotBase Bot { get; }
+        public DiscordBotSharder Bot { get; }
 
         public Timer ChannelTimer { get; }
 
