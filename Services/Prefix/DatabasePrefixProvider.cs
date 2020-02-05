@@ -22,7 +22,7 @@ namespace Causym.Services
                 MentionPrefix.Instance
             };
 
-            if (message.Guild != null)
+            if (message != null && message.Guild != null)
             {
                 using (var db = new DataContext())
                 {

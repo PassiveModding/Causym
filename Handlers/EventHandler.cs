@@ -38,11 +38,11 @@ namespace Causym
 
         private Logger Logger { get; }
 
-        private Task Bot_ShardReady(Disqord.Sharding.ShardReadyEventArgs e)
+        private async Task Bot_ShardReady(Disqord.Sharding.ShardReadyEventArgs e)
         {
             Logger.Log($"Shard {e.Shard.Id} Ready, Guilds: {e.Shard.Guilds.Count}", Logger.Source.Bot);
-            e.Shard.SetPresenceAsync(new Disqord.LocalActivity("?help", Disqord.ActivityType.Watching));
-            return Task.CompletedTask;
+            var prefixResponse = await Bot.PrefixProvider.GetPrefixesAsync(null);
+            await e.Shard.SetPresenceAsync(new Disqord.LocalActivity($"{prefixResponse.Last()}help", Disqord.ActivityType.Watching));
         }
 
         private void Logger_MessageLogged(object sender, Disqord.Logging.MessageLoggedEventArgs e)
