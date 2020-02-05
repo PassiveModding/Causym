@@ -12,6 +12,7 @@ using Qmmands;
 
 namespace Causym.Modules.General
 {
+    [HelpMetadata("🎁", "#4fe25d")]
     public class General : DiscordModuleBase
     {
         public General(CommandService cmdService, HttpClient httpClient)
