@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Linq;
 using System.Net.Http;
 using System.Reflection;
 using System.Threading.Tasks;
 using Causym.Services;
 using CommandLine;
 using Disqord;
-using Disqord.Bot;
 using Disqord.Bot.Sharding;
 using Disqord.Extensions.Interactivity;
 using Microsoft.EntityFrameworkCore;
@@ -43,16 +41,19 @@ namespace Causym
                 botServiceCollection = botServiceCollection.AddSingleton(type);
             }
 
-            var bot = new DiscordBotSharder(TokenType.Bot, config.Entries[Config.Defaults.Token.ToString()], new DatabasePrefixProvider(config.Entries[Config.Defaults.Prefix.ToString()]), new DiscordBotSharderConfiguration
-            {
-                ProviderFactory = bot => botServiceCollection
-                    .AddDbContext<DataContext>(ServiceLifetime.Transient)
-                    //.AddSingleton(bot)
-                    .AddSingleton(bot as DiscordBotSharder)
-                    .AddSingleton(config)
-                    .AddSingleton(logger)
-                    .BuildServiceProvider()
-            });
+            var bot = new DiscordBotSharder(
+                TokenType.Bot,
+                config.Entries[Config.Defaults.Token.ToString()],
+                new DatabasePrefixProvider(config.Entries[Config.Defaults.Prefix.ToString()]),
+                new DiscordBotSharderConfiguration
+                {
+                    ProviderFactory = bot => botServiceCollection
+                        .AddDbContext<DataContext>(ServiceLifetime.Transient)
+                        .AddSingleton(bot as DiscordBotSharder)
+                        .AddSingleton(config)
+                        .AddSingleton(logger)
+                        .BuildServiceProvider()
+                });
 
             bot.AddTypeParser(new IEmojiParser(bot.GetRequiredService<HttpClient>()));
             await bot.AddExtensionAsync(new InteractivityExtension());
@@ -60,7 +61,15 @@ namespace Causym
             foreach (var type in services)
             {
                 var service = bot.GetService(type);
-                if (service == null) logger.Log($"Service of type {type.Name} not found in bot service provider despite being marked with a service attribute", Logger.Source.Bot, Logger.LogLevel.Warn);
+                if (service == null)
+                {
+                    logger.Log(
+                        $"Service of type {type.Name} " +
+                      $"not found in bot service provider despite being marked " +
+                      $"with a service attribute",
+                        Logger.Source.Bot,
+                        Logger.LogLevel.Warn);
+                }
             }
 
             bot.AddModules(Assembly.GetEntryAssembly());
@@ -83,7 +92,10 @@ namespace Causym
 
             config.GetOrAddEntry(Config.Defaults.Token.ToString(), () =>
             {
-                logger.Log($"Please input bot token, can be found at: {Constants.DeveloperApplicationLink}", Logger.Source.Bot);
+                logger.Log(
+                    $"Please input bot token, can be found at: " +
+                    $"{Constants.DeveloperApplicationLink}",
+                    Logger.Source.Bot);
                 return Console.ReadLine();
             });
 

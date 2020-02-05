@@ -129,8 +129,8 @@ namespace Causym.Modules.Translation
                     {
                         builder.Footer = new Disqord.LocalEmbedFooterBuilder()
                         {
-                        IconUrl = embed.Footer.IconUrl,
-                        Text = footerTextResult.TranslateResult.TranslatedText.FixLength(250)
+                            IconUrl = embed.Footer.IconUrl,
+                            Text = footerTextResult.TranslateResult.TranslatedText.FixLength(250)
                         };
                     }
                 }

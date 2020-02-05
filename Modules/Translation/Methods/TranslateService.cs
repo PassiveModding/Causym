@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Causym.Services;
 using Disqord;
-using Disqord.Bot;
 using Disqord.Bot.Sharding;
 using Disqord.Events;
 using Disqord.Rest;
