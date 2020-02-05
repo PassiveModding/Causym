@@ -23,7 +23,9 @@ namespace Causym
 
         public void Log(string message, string source, LogLevel level = LogLevel.Info)
         {
-            Console.WriteLine($"[{TimeStamp}][{level.ToString().ToUpper().PadRight(4).Substring(0, 4)}][{source.ToUpper()}]{message}");
+            Console.WriteLine($"[{TimeStamp}]" +
+                $"[{level.ToString().ToUpper().PadRight(4).Substring(0, 4)}]" +
+                $"[{source.ToUpper()}]{message}");
         }
 
         public void Log(string message, Source source, LogLevel level = LogLevel.Info)

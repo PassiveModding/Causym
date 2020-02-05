@@ -9,7 +9,8 @@ namespace Causym.Modules.Statistics
 {
     public partial class StatisticsService
     {
-        private readonly Dictionary<ulong, (ulong ChannelId, int MemberCount)> updateQueue = new Dictionary<ulong, (ulong ChannelId, int MemberCount)>();
+        private readonly Dictionary<ulong, (ulong ChannelId, int MemberCount)> updateQueue =
+            new Dictionary<ulong, (ulong ChannelId, int MemberCount)>();
 
         public StatisticsService(DiscordBotSharder bot)
         {
@@ -49,7 +50,9 @@ namespace Causym.Modules.Statistics
 
                     try
                     {
-                        await Bot.ModifyVoiceChannelAsync(item.Value.ChannelId, x => x.Name = $"👥 Members: {item.Value.MemberCount}");
+                        await Bot.ModifyVoiceChannelAsync(
+                            item.Value.ChannelId,
+                            x => x.Name = $"👥 Members: {item.Value.MemberCount}");
                     }
                     catch
                     {
@@ -77,7 +80,8 @@ namespace Causym.Modules.Statistics
             {
                 var config = db.StatServers.FirstOrDefault(x => x.GuildId == e.Guild.Id);
                 if (config == null || config.MemberChannelId == null) return Task.CompletedTask;
-                if (!e.Guild.VoiceChannels.TryGetValue(config.MemberChannelId.Value, out var channel)) return Task.CompletedTask;
+                if (!e.Guild.VoiceChannels.TryGetValue(config.MemberChannelId.Value, out var channel))
+                    return Task.CompletedTask;
 
                 updateQueue[e.Guild.Id] = (channel.Id, e.Guild.MemberCount);
             }
@@ -91,7 +95,8 @@ namespace Causym.Modules.Statistics
             {
                 var config = db.StatServers.FirstOrDefault(x => x.GuildId == e.Member.Guild.Id);
                 if (config == null || config.MemberChannelId == null) return Task.CompletedTask;
-                if (!e.Member.Guild.VoiceChannels.TryGetValue(config.MemberChannelId.Value, out var channel)) return Task.CompletedTask;
+                if (!e.Member.Guild.VoiceChannels.TryGetValue(config.MemberChannelId.Value, out var channel))
+                    return Task.CompletedTask;
 
                 updateQueue[e.Member.Guild.Id] = (channel.Id, e.Member.Guild.MemberCount);
             }

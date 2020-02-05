@@ -18,7 +18,8 @@ namespace Causym.Modules.Moderation
         public async Task PruneAsync(IUser user)
         {
             var messages = await Context.Channel.GetMessagesAsync();
-            await (Context.Channel as ITextChannel).DeleteMessagesAsync(messages.Where(x => x.Author.Id == user.Id).Select(x => x.Id));
+            await (Context.Channel as ITextChannel)
+                .DeleteMessagesAsync(messages.Where(x => x.Author.Id == user.Id).Select(x => x.Id));
         }
 
         [Command("Prune")]

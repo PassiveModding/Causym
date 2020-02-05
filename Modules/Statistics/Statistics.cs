@@ -65,7 +65,8 @@ namespace Causym.Modules.Statistics
                 var config = db.StatServers.FirstOrDefault(x => x.GuildId == Context.Guild.Id);
                 if (config == null)
                 {
-                    var channel = await Context.Guild.CreateVoiceChannelAsync($"👥 Members: {Context.Guild.MemberCount}", x => x.Position = 0);
+                    var channel = await Context.Guild
+                        .CreateVoiceChannelAsync($"👥 Members: {Context.Guild.MemberCount}", x => x.Position = 0);
                     config = new StatisticsConfig
                     {
                         GuildId = Context.Guild.Id,
@@ -81,7 +82,8 @@ namespace Causym.Modules.Statistics
                         return;
                     }
 
-                    var channel = await Context.Guild.CreateVoiceChannelAsync($"👥 Members: {Context.Guild.MemberCount}");
+                    var channel = await Context.Guild
+                        .CreateVoiceChannelAsync($"👥 Members: {Context.Guild.MemberCount}");
                     config.MemberChannelId = channel.Id;
                     db.StatServers.Update(config);
                 }
@@ -96,7 +98,9 @@ namespace Causym.Modules.Statistics
         {
             using (var db = new DataContext())
             {
-                var snapshots = db.StatSnapshots.Where(x => x.GuildId == Context.Guild.Id).OrderByDescending(x => x.SnapshotTime).Take(144);
+                var snapshots = db.StatSnapshots
+                    .Where(x => x.GuildId == Context.Guild.Id)
+                    .OrderByDescending(x => x.SnapshotTime).Take(144);
 
                 int count = snapshots.Count();
                 if (count == 0)
@@ -112,11 +116,31 @@ namespace Causym.Modules.Statistics
 
                 var plt = new ScottPlot.Plot(1000, 500);
                 var xValues = snapshots.Select(x => (double)x.SnapshotTime.Ticks).ToArray();
-                plt.PlotScatter(xValues, snapshots.Select(x => (double)x.MemberCount).ToArray(), Color.Blue, label: "Members");
-                plt.PlotScatter(xValues, snapshots.Select(x => (double)x.MembersDND).ToArray(), Color.Red, label: "Members DND");
-                plt.PlotScatter(xValues, snapshots.Select(x => (double)x.MembersIdle).ToArray(), Color.Orange, label: "Members Idle");
-                plt.PlotScatter(xValues, snapshots.Select(x => (double)x.MembersOnline).ToArray(), Color.Green, label: "Members Online");
-                plt.PlotScatter(xValues, snapshots.Select(x => (double)x.TotalMessageCount).ToArray(), Color.Honeydew, label: "Messages");
+                plt.PlotScatter(
+                    xValues,
+                    snapshots.Select(x => (double)x.MemberCount).ToArray(),
+                    Color.Blue,
+                    label: "Members");
+                plt.PlotScatter(
+                    xValues,
+                    snapshots.Select(x => (double)x.MembersDND).ToArray(),
+                    Color.Red,
+                    label: "Members DND");
+                plt.PlotScatter(
+                    xValues,
+                    snapshots.Select(x => (double)x.MembersIdle).ToArray(),
+                    Color.Orange,
+                    label: "Members Idle");
+                plt.PlotScatter(
+                    xValues,
+                    snapshots.Select(x => (double)x.MembersOnline).ToArray(),
+                    Color.Green,
+                    label: "Members Online");
+                plt.PlotScatter(
+                    xValues,
+                    snapshots.Select(x => (double)x.TotalMessageCount).ToArray(),
+                    Color.Honeydew,
+                    label: "Messages");
 
                 // Calculate difference in ticks between first and last snapshots
                 var difference = xValues.First() - xValues.Last();
@@ -159,7 +183,9 @@ namespace Causym.Modules.Statistics
 
             using (var db = new DataContext())
             {
-                var snapshots = db.ChannelSnapshots.Where(x => x.ChannelId == channel.Id).OrderByDescending(x => x.SnapshotTime).Take(144);
+                var snapshots = db.ChannelSnapshots
+                    .Where(x => x.ChannelId == channel.Id)
+                    .OrderByDescending(x => x.SnapshotTime).Take(144);
 
                 int count = snapshots.Count();
                 if (count == 0)
@@ -173,7 +199,11 @@ namespace Causym.Modules.Statistics
                     return;
                 }
 
-                await PlotAsync(snapshots.Select(x => (double)x.SnapshotTime.Ticks).ToArray(), snapshots.Select(x => (double)x.MessageCount).ToArray(), "Messages", $"#{channel.Name} Messages");
+                await PlotAsync(
+                    snapshots.Select(x => (double)x.SnapshotTime.Ticks).ToArray(),
+                    snapshots.Select(x => (double)x.MessageCount).ToArray(),
+                    "Messages",
+                    $"#{channel.Name} Messages");
             }
         }
 

@@ -29,7 +29,13 @@ namespace Causym.Modules.General
         {
             if (user == null) user = Context.User;
 
-            await ReplyAsync("", false, new LocalEmbedBuilder().WithAuthor(user).WithImageUrl(user.GetAvatarUrl()).Build());
+            await ReplyAsync(
+                "",
+                false,
+                new LocalEmbedBuilder()
+                .WithAuthor(user)
+                .WithImageUrl(user.GetAvatarUrl())
+                .Build());
         }
 
         [Command("Ping", "Latency")]
@@ -55,7 +61,10 @@ namespace Causym.Modules.General
         [Command("Invite")]
         public async Task InviteAsync()
         {
-            await ReplyAsync("", false, new LocalEmbedBuilder().WithColor(Color.DarkSlateGray).WithDescription($"https://discordapp.com/oauth2/authorize?client_id={Context.Bot.CurrentUser.Id}&scope=bot&permissions={Constants.BotPermissionLevel}").Build());
+            await ReplyAsync("", false, new LocalEmbedBuilder().WithColor(Color.DarkSlateGray)
+                .WithDescription($"https://discordapp.com/oauth2/authorize" +
+                $"?client_id={Context.Bot.CurrentUser.Id}" +
+                $"&scope=bot&permissions={Constants.BotPermissionLevel}").Build());
         }
 
         [Command("Stats")]
@@ -63,7 +72,8 @@ namespace Causym.Modules.General
         {
             string changes;
             var request = new HttpRequestMessage(HttpMethod.Get, Constants.GithubApiCommitUrl);
-            request.Headers.Add("User-Agent", "Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.2; WOW64; Trident/6.0)");
+            request.Headers
+                .Add("User-Agent", "Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.2; WOW64; Trident/6.0)");
             var response = await HttpClient.SendAsync(request);
             if (!response.IsSuccessStatusCode)
             {
@@ -72,7 +82,10 @@ namespace Causym.Modules.General
             else
             {
                 dynamic result = JArray.Parse(await response.Content.ReadAsStringAsync());
-                changes = $"[{((string)result[0].sha).Substring(0, 7)}]({result[0].html_url}) {result[0].commit.message}\n" + $"[{((string)result[1].sha).Substring(0, 7)}]({result[1].html_url}) {result[1].commit.message}\n" + $"[{((string)result[2].sha).Substring(0, 7)}]({result[2].html_url}) {result[2].commit.message}";
+                changes =
+                    $"[{((string)result[0].sha).Substring(0, 7)}]({result[0].html_url}) {result[0].commit.message}\n" +
+                    $"[{((string)result[1].sha).Substring(0, 7)}]({result[1].html_url}) {result[1].commit.message}\n" +
+                    $"[{((string)result[2].sha).Substring(0, 7)}]({result[2].html_url}) {result[2].commit.message}";
             }
 
             var embed = new LocalEmbedBuilder();
@@ -82,28 +95,47 @@ namespace Causym.Modules.General
                 {
                     x.IconUrl = Context.Bot.CurrentUser.GetAvatarUrl();
                     x.Name = $"{Context.Bot.CurrentUser.Name}'s Official Invite";
-                    x.Url = $"https://discordapp.com/oauth2/authorize?client_id={Context.Bot.CurrentUser.Id}&scope=bot&permissions={Constants.BotPermissionLevel}";
+                    x.Url = $"https://discordapp.com/oauth2/authorize" +
+                    $"?client_id={Context.Bot.CurrentUser.Id}&scope=bot" +
+                    $"&permissions={Constants.BotPermissionLevel}";
                 });
             embed.AddField("Changes", changes.FixLength());
 
+            int bots = Context.Bot.Guilds
+                .Sum(x => x.Value.Members.Count(z => z.Value?.IsBot == true));
+            int humans = Context.Bot.Guilds
+                .Sum(x => x.Value.Members.Count(z => z.Value?.IsBot == false));
+            int presentUsers = Context.Bot.Guilds
+                .Sum(x => x.Value.Members.Count(u => u.Value?.Presence?.Status != UserStatus.Offline));
+
             embed.AddField(
                 "Members",
-                $"Bot: {Context.Bot.Guilds.Sum(x => x.Value.Members.Count(z => z.Value?.IsBot == true))}\n" +
-                $"Human: {Context.Bot.Guilds.Sum(x => x.Value.Members.Count(z => z.Value?.IsBot == false))}\n" +
-                $"Present: {Context.Bot.Guilds.Sum(x => x.Value.Members.Count(u => u.Value?.Presence?.Status != UserStatus.Offline))}",
+                $"Bot: {bots}\n" +
+                $"Human: {humans}\n" +
+                $"Present: {presentUsers}",
                 true);
+
+            int online = Context.Bot.Guilds
+                .Sum(x => x.Value.Members.Count(z => z.Value?.Presence?.Status == UserStatus.Online));
+            int afk = Context.Bot.Guilds
+                .Sum(x => x.Value.Members.Count(z => z.Value?.Presence?.Status == UserStatus.Idle));
+            int dnd = Context.Bot.Guilds
+                .Sum(x => x.Value.Members.Count(z => z.Value?.Presence?.Status == UserStatus.DoNotDisturb));
+
             embed.AddField(
                 "Members",
-                $"Online: {Context.Bot.Guilds.Sum(x => x.Value.Members.Count(z => z.Value?.Presence?.Status == UserStatus.Online))}\n" +
-                $"AFK: {Context.Bot.Guilds.Sum(x => x.Value.Members.Count(z => z.Value?.Presence?.Status == UserStatus.Idle))}\n" +
-                $"DND: {Context.Bot.Guilds.Sum(x => x.Value.Members.Count(z => z.Value?.Presence?.Status == UserStatus.DoNotDisturb))}",
+                $"Online: {online}\n" +
+                $"AFK: {afk}\n" +
+                $"DND: {dnd}",
                 true);
+
             embed.AddField(
                 "Channels",
                 $"Text: {Context.Bot.Guilds.Sum(x => x.Value.TextChannels.Count)}\n" +
                 $"Voice: {Context.Bot.Guilds.Sum(x => x.Value.VoiceChannels.Count)}\n" +
                 $"Total: {Context.Bot.Guilds.Sum(x => x.Value.Channels.Count)}",
                 true);
+
             embed.AddField(
                 "Guilds",
                 $"Count: {Context.Bot.Guilds.Count}\n" +
@@ -117,11 +149,13 @@ namespace Causym.Modules.General
                 $"Aliases: {CmdService.GetAllCommands().Sum(x => x.Aliases.Count)}\n" +
                 $"Modules: {CmdService.GetAllModules().Count()}",
                 true);
+
             embed.AddField(
                 ":hammer_pick:",
                 $"Heap: {Math.Round(GC.GetTotalMemory(true) / (1024.0 * 1024.0), 2)} MB\n" +
                 $"Up: {(DateTime.Now - Process.GetCurrentProcess().StartTime).ToString(@"dd\D\ hh\H\ mm\M\ ss\S")}",
                 true);
+
             embed.AddField(":beginner:", $"Written by: [PassiveModding](https://github.com/PassiveModding)", true);
 
             await ReplyAsync("", false, embed.Build());

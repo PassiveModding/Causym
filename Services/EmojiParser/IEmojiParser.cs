@@ -31,7 +31,8 @@ namespace Causym.Services
         private HttpClient Client { get; }
 
         /// <inheritdoc/>
-        public override async ValueTask<TypeParserResult<IEmoji>> ParseAsync(Parameter parameter, string value, CommandContext context)
+        public override async ValueTask<TypeParserResult<IEmoji>>
+            ParseAsync(Parameter parameter, string value, CommandContext context)
         {
             if (LocalCustomEmoji.TryParse(value, out var localCustomEmoji))
             {
@@ -52,8 +53,8 @@ namespace Causym.Services
             }
 
             var match = emojis.FirstOrDefault(x => x.Surrogates == value ||
-                                                x.NamesWithColons.Any(n => n.Equals(value, System.StringComparison.OrdinalIgnoreCase)) ||
-                                                x.Names.Any(n => n.Equals(value, System.StringComparison.OrdinalIgnoreCase)));
+                            x.NamesWithColons.Any(n => n.Equals(value, System.StringComparison.OrdinalIgnoreCase)) ||
+                            x.Names.Any(n => n.Equals(value, System.StringComparison.OrdinalIgnoreCase)));
 
             if (match != null)
             {

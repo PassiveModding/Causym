@@ -24,10 +24,15 @@ namespace Causym.Services.Help
             var tempDict = new Dictionary<string, (Module Module, LocalEmbedBuilder Embed, string Title)>();
             foreach (var module in CommandService.GetAllModules())
             {
-                if (module.Attributes.FirstOrDefault(x => x.GetType().Equals(typeof(HelpMetadataAttribute))) is HelpMetadataAttribute attMatch)
+                if (module.Attributes
+                    .FirstOrDefault(x => x.GetType()
+                    .Equals(typeof(HelpMetadataAttribute))) is HelpMetadataAttribute attMatch)
                 {
                     var title = $"{attMatch.ButtonCode} {module.Name}";
-                    if (!tempDict.TryAdd(attMatch.ButtonCode, (module, HelpService.GetModuleHelp(module).WithColor(attMatch.Color), title)))
+                    if (!tempDict.TryAdd(
+                        attMatch.ButtonCode,
+                        (module, HelpService.GetModuleHelp(module).WithColor(attMatch.Color),
+                        title)))
                     {
                         // TODO: warn about module being ignored due to duplicate button.
                     }
@@ -41,7 +46,11 @@ namespace Causym.Services.Help
 
             footerTitles.AddRange(tempDict.Values.Select(x => x.Title));
             var footerContent = string.Join(", ", footerTitles);
-            var homeBuilder = new LocalEmbedBuilder().WithTitle("Modules").WithColor(Color.Aqua).WithFooter(footerContent);
+            var homeBuilder = new LocalEmbedBuilder()
+                .WithTitle("Modules")
+                .WithColor(Color.Aqua)
+                .WithFooter(footerContent);
+
             foreach (var dPage in tempDict)
             {
                 homeBuilder.AddField(new LocalEmbedFieldBuilder

@@ -19,14 +19,16 @@ namespace Causym.Services.Help
                 }
 
                 // TODO: Split based on max embed length (or x amount of fields + specific max length)
-                return builder.WithTitle(module.FullAliases.FirstOrDefault() ?? module.Aliases.FirstOrDefault() ?? module.Name);
+                return builder
+                    .WithTitle(module.FullAliases.FirstOrDefault() ?? module.Aliases.FirstOrDefault() ?? module.Name);
             }
             else
             {
                 var commandInfos = module.Commands.Select(x => GetCommandHelp(x));
 
                 // TODO: Split based on max embed length (or x amount of fields + specific max length)
-                return new LocalEmbedBuilder().WithDescription(string.Join("\n", commandInfos)).WithTitle(module.FullAliases.First());
+                return new LocalEmbedBuilder()
+                    .WithDescription(string.Join("\n", commandInfos)).WithTitle(module.FullAliases.First());
             }
         }
 
@@ -39,7 +41,8 @@ namespace Causym.Services.Help
         {
             var paramInfo = string.Join(" ", command.Parameters.Select(x => FormatParameter(x)));
 
-            return $"`{command.FullAliases.FirstOrDefault() ?? command.Aliases.FirstOrDefault() ?? command.Name}{(paramInfo.Length > 0 ? " " + paramInfo : "")}`";
+            return $"`{command.FullAliases.FirstOrDefault() ?? command.Aliases.FirstOrDefault() ?? command.Name}" +
+                $"{(paramInfo.Length > 0 ? " " + paramInfo : "")}`";
         }
 
         private static string GetCommandInfo(Command command)

@@ -52,7 +52,10 @@ namespace Causym
 
         private Task CommandExecutionFailedAsync(CommandExecutionFailedEventArgs e)
         {
-            Logger.Log($"Command Failed: {e.Context.Command.Name} {e.Result.CommandExecutionStep} {e.Result.Reason}\n{e.Result.Exception}", Logger.Source.Cmd);
+            Logger.Log(
+                $"Command Failed: {e.Context.Command.Name} {e.Result.CommandExecutionStep} {e.Result.Reason}\n" +
+                $"{e.Result.Exception}",
+                Logger.Source.Cmd);
             return Task.CompletedTask;
         }
 
@@ -81,7 +84,10 @@ namespace Causym
         {
             if (e.Message is CachedUserMessage cM)
             {
-                Logger.Log("Message: " + cM.Content + (cM.Embeds.Count > 0 ? cM.Embeds.Count + " Embed(s)" : ""), Logger.Source.Bot, Logger.LogLevel.Debug);
+                Logger.Log(
+                    "Message: " + cM.Content + (cM.Embeds.Count > 0 ? cM.Embeds.Count + " Embed(s)" : ""),
+                    Logger.Source.Bot,
+                    Logger.LogLevel.Debug);
             }
             else
             {
