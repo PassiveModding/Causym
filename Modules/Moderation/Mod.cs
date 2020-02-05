@@ -15,18 +15,19 @@ namespace Causym.Modules.Moderation
     public class Mod : DiscordModuleBase
     {
         [Group("Prune")]
+        [HelpMetadata("🗄️", "#C70039")]
         [RequireBotChannelPermissions(Permission.ManageMessages)]
         public class Prune : DiscordModuleBase
         {
             [Command]
-            public async Task PruneAsync(ulong countOrUserId = 100)
+            public async Task PruneAsync(ulong countOrUserOrRoleId = 100)
             {
                 IEnumerable<RestMessage> messages;
-                if (countOrUserId <= 1000)
+                if (countOrUserOrRoleId <= 1000)
                 {
-                    messages = await Context.Channel.GetMessagesAsync((int)countOrUserId);
+                    messages = await Context.Channel.GetMessagesAsync((int)countOrUserOrRoleId);
                 }
-                else if (countOrUserId < 1000000000)
+                else if (countOrUserOrRoleId < 1000000000)
                 {
                     await ReplyAsync("", false, new LocalEmbedBuilder().WithDescription("Maximum prune count is 1000").Build());
                     return;
@@ -37,10 +38,10 @@ namespace Causym.Modules.Moderation
                     messages = await Context.Channel.GetMessagesAsync(100);
                     int count = messages.Count();
 
-                    if (Context.Guild.Roles.ContainsKey(countOrUserId))
+                    if (Context.Guild.Roles.ContainsKey(countOrUserOrRoleId))
                     {
                         // Check against member roles.
-                        messages = messages.Where(x => (x.Author as RestMember)?.RoleIds.Contains(countOrUserId) == true);
+                        messages = messages.Where(x => (x.Author as RestMember)?.RoleIds.Contains(countOrUserOrRoleId) == true);
                         if (messages.Count() == count)
                         {
                             // No matches found.
@@ -51,7 +52,7 @@ namespace Causym.Modules.Moderation
                     else
                     {
                         // Check against user id.
-                        messages = messages.Where(x => x.Author.Id == countOrUserId);
+                        messages = messages.Where(x => x.Author.Id == countOrUserOrRoleId);
                         if (messages.Count() == count)
                         {
                             // No matches found.
