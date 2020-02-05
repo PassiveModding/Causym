@@ -96,6 +96,8 @@ namespace Causym.Modules.Statistics
 
                             db.StatSnapshots.Add(snapshot);
                         }
+
+                        GuildMessageTracker.Clear();
                     }
 
                     await db.SaveChangesAsync();
