@@ -12,6 +12,8 @@ namespace Causym.Modules.Statistics
         private readonly Dictionary<ulong, (ulong ChannelId, int MemberCount)> updateQueue =
             new Dictionary<ulong, (ulong ChannelId, int MemberCount)>();
 
+        private readonly int shapshotCallbackInterval = 60 * 1000 * 60;
+
         public StatisticsService(DiscordBotSharder bot)
         {
             using (var db = new DataContext())
@@ -29,7 +31,7 @@ namespace Causym.Modules.Statistics
 #if DEBUG
             SnapshotTimer = new Timer(SnapshotCallback, null, 0, 30 * 1000);
 #else
-            SnapshotTimer = new Timer(SnapshotCallback, null, 0, 60 * 1000 * 10);
+            SnapshotTimer = new Timer(SnapshotCallback, null, 0, shapshotCallbackInterval);
 #endif
         }
 

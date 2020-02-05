@@ -108,7 +108,7 @@ namespace Causym.Modules.Statistics
 #if DEBUG
                 SnapshotTimer.Change(30 * 1000, Timeout.Infinite);
 #else
-                SnapshotTimer.Change(60 * 1000 * 10, Timeout.Infinite);
+                SnapshotTimer.Change(shapshotCallbackInterval, Timeout.Infinite);
 #endif
             }
         }
