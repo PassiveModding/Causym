@@ -22,22 +22,28 @@ namespace Causym.Modules.Statistics
             }
 
             Bot = bot;
+            Bot.Ready += Bot_Ready;
+        }
+
+        public DiscordBotSharder Bot { get; }
+
+        public Timer ChannelTimer { get; private set; }
+
+        private Task Bot_Ready(ReadyEventArgs e)
+        {
             Bot.MemberJoined += Bot_MemberJoined;
             Bot.MemberLeft += Bot_MemberLeft;
             Bot.MessageReceived += Bot_MessageReceived;
             ChannelTimer = new Timer(ChannelCallback, null, 0, 60 * 1000);
 
-            // 10 minutes vs 30 sec in debug mode.
+            // 30 sec in debug mode.
 #if DEBUG
             SnapshotTimer = new Timer(SnapshotCallback, null, 0, 30 * 1000);
 #else
             SnapshotTimer = new Timer(SnapshotCallback, null, 0, shapshotCallbackInterval);
 #endif
+            return Task.CompletedTask;
         }
-
-        public DiscordBotSharder Bot { get; }
-
-        public Timer ChannelTimer { get; }
 
         private async void ChannelCallback(object state)
         {

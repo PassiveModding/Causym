@@ -11,7 +11,7 @@ namespace Causym.Modules.Statistics
     [Service]
     public partial class StatisticsService
     {
-        public Timer SnapshotTimer { get; }
+        public Timer SnapshotTimer { get; private set; }
 
         public Dictionary<ulong, Dictionary<ulong, int>> GuildMessageTracker { get; } =
             new Dictionary<ulong, Dictionary<ulong, int>>();
