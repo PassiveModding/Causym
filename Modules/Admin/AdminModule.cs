@@ -4,6 +4,7 @@ using Qmmands;
 
 namespace Causym.Modules.Admin
 {
+    // This is selectively not included in the help commands as these commands are not to be shown to regular users
     [BotOwnerOnly]
     [Group("Admin")]
     public class AdminModule : DiscordModuleBase
