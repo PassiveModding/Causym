@@ -8,5 +8,7 @@
         public ulong GuildId { get; set; }
 
         public string Prefix { get; set; }
+
+        public bool RespondOnCommandFailure { get; set; } = true;
     }
 }

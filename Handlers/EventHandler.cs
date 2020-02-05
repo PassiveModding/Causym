@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Causym.Services;
 using Disqord;
+using Disqord.Bot;
 using Disqord.Bot.Sharding;
 using Disqord.Events;
 using Qmmands;
@@ -50,13 +51,42 @@ namespace Causym
             Logger.Log(e.Message, Logger.Source.Bot, Logger.LogLevel.Verbose);
         }
 
-        private Task CommandExecutionFailedAsync(CommandExecutionFailedEventArgs e)
+        private async Task CommandExecutionFailedAsync(CommandExecutionFailedEventArgs e)
         {
+            var context = e.Context as DiscordCommandContext;
             Logger.Log(
                 $"Command Failed: {e.Context.Command.Name} {e.Result.CommandExecutionStep} {e.Result.Reason}\n" +
-                $"{e.Result.Exception}",
+                $"{e.Result.Exception.StackTrace}",
                 Logger.Source.Cmd);
-            return Task.CompletedTask;
+
+            bool response = true;
+
+#if DEBUG
+
+#else
+            if (context.Guild != null)
+            {
+                using (var db = new DataContext())
+                {
+                    var guildConfig = db.Guilds.FirstOrDefault(x => x.GuildId == context.Guild.Id);
+                    if (guildConfig != null)
+                    {
+                        response = guildConfig.RespondOnCommandFailure;
+                    }
+                }
+            }
+#endif
+
+            if (!response) return;
+
+            await context.Channel.SendMessageAsync(
+                "",
+                false,
+                new LocalEmbedBuilder()
+                .WithTitle($"Command Failed: {e.Context.Command.Name}")
+                .AddField("Reason", e.Result.Exception.Message)
+                .WithColor(Color.Red)
+                .Build());
         }
 
         private Task CommandExecutedAsync(CommandExecutedEventArgs e)
