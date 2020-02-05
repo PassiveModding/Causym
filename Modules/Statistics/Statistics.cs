@@ -50,6 +50,26 @@ namespace Causym.Modules.Statistics
                     db.StatServers.Update(config);
                 }
 
+                if (config.SnapshotsEnabled)
+                {
+                    // Add initial snapshot for the server
+                    var snapshot = new StatisticsSnapshot
+                    {
+                        GuildId = config.GuildId,
+                        MemberCount = Context.Guild.MemberCount,
+                        MembersDND = Context.Guild.Members
+                            .Count(x => x.Value?.Presence?.Status == Disqord.UserStatus.DoNotDisturb),
+                        MembersIdle = Context.Guild.Members
+                            .Count(x => x.Value?.Presence?.Status == Disqord.UserStatus.Idle),
+                        MembersOnline = Context.Guild.Members
+                            .Count(x => x.Value?.Presence?.Status == Disqord.UserStatus.Online),
+                        SnapshotTime = DateTime.UtcNow,
+
+                        TotalMessageCount = 0
+                    };
+                    db.StatSnapshots.Add(snapshot);
+                }
+
                 await ReplyAsync($"Snapshots Enabled: {config.SnapshotsEnabled}");
                 await db.SaveChangesAsync();
             }
