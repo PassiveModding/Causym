@@ -56,6 +56,7 @@ namespace Causym
                 });
 
             bot.AddTypeParser(new IEmojiParser(bot.GetRequiredService<HttpClient>()));
+            bot.AddTypeParser(new TimeSpanParser());
             await bot.AddExtensionAsync(new InteractivityExtension());
 
             foreach (var type in services)
