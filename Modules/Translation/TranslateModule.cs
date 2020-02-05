@@ -46,12 +46,6 @@ namespace Causym.Modules.Translation
             await ReplyAsync("", false, embed.Build());
         }
 
-        [Command("Help", "HelpMe", "Commands")]
-        public async Task HelpAsync()
-        {
-            await ReplyAsync("", false, HelpService.GetModuleHelp(Context.Command.Module).Build());
-        }
-
         [Command("Reactions")]
         [Description("Updates or displays the current setting for Reaction translations")]
         [RequireMemberGuildPermissions(Permission.Administrator)]
