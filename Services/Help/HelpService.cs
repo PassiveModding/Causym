@@ -9,7 +9,12 @@ namespace Causym.Services.Help
     {
         public static LocalEmbedBuilder GetModuleHelp(Module module)
         {
-            if (module.Commands.Count <= 25)
+            if (module.Commands.Count == 0)
+            {
+                return new LocalEmbedBuilder()
+                    .WithTitle(module.FullAliases.FirstOrDefault() ?? module.Aliases.FirstOrDefault() ?? module.Name);
+            }
+            else if (module.Commands.Count <= 25)
             {
                 var commandInfos = module.Commands.Select(x => GetCommandInfoField(x));
                 var builder = new LocalEmbedBuilder();

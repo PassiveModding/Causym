@@ -53,13 +53,24 @@ namespace Causym.Services.Help
 
             foreach (var dPage in tempDict)
             {
-                homeBuilder.AddField(new LocalEmbedFieldBuilder
+                if (dPage.Value.Module.Commands.Count == 0)
                 {
-                    Name = dPage.Value.Title,
-                    Value = string.Join(", ", dPage.Value.Module.Commands.Select(c => '`' + c.Name + '`'))
-                });
+                    homeBuilder.AddField(new LocalEmbedFieldBuilder
+                    {
+                        Name = dPage.Value.Title,
+                        Value = "No Commands."
+                    });
+                }
+                else
+                {
+                    homeBuilder.AddField(new LocalEmbedFieldBuilder
+                    {
+                        Name = dPage.Value.Title,
+                        Value = string.Join(", ", dPage.Value.Module.Commands.Select(c => '`' + c.Name + '`'))
+                    });
 
-                pages.Add(dPage.Key, dPage.Value.Embed.WithFooter(footerContent).Build());
+                    pages.Add(dPage.Key, dPage.Value.Embed.WithFooter(footerContent).Build());
+                }
             }
 
             homePage = homeBuilder.Build();
