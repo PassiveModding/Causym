@@ -29,7 +29,12 @@ namespace Causym.Modules.Moderation
                 }
                 else if (countOrUserOrRoleId < 1000000000)
                 {
-                    await ReplyAsync("", false, new LocalEmbedBuilder().WithDescription("Maximum prune count is 1000").Build());
+                    await ReplyAsync(
+                        "",
+                        false,
+                        new LocalEmbedBuilder()
+                        .WithDescription("Maximum prune count is 1000")
+                        .Build());
                     return;
                 }
                 else
@@ -41,11 +46,17 @@ namespace Causym.Modules.Moderation
                     if (Context.Guild.Roles.ContainsKey(countOrUserOrRoleId))
                     {
                         // Check against member roles.
-                        messages = messages.Where(x => (x.Author as RestMember)?.RoleIds.Contains(countOrUserOrRoleId) == true);
+                        messages = messages
+                            .Where(x => (x.Author as RestMember)?.RoleIds.Contains(countOrUserOrRoleId) == true);
                         if (messages.Count() == count)
                         {
                             // No matches found.
-                            await ReplyAsync("", false, new LocalEmbedBuilder().WithDescription("No messages matching the search found.").Build());
+                            await ReplyAsync(
+                                "",
+                                false,
+                                new LocalEmbedBuilder()
+                                .WithDescription("No messages matching the search found.")
+                                .Build());
                             return;
                         }
                     }
@@ -56,7 +67,12 @@ namespace Causym.Modules.Moderation
                         if (messages.Count() == count)
                         {
                             // No matches found.
-                            await ReplyAsync("", false, new LocalEmbedBuilder().WithDescription("No messages matching the search found.").Build());
+                            await ReplyAsync(
+                                "",
+                                false,
+                                new LocalEmbedBuilder()
+                                .WithDescription("No messages matching the search found.")
+                                .Build());
                             return;
                         }
                     }
