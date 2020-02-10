@@ -1,22 +1,21 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Causym.Services.Help;
 using Disqord;
 using Disqord.Bot;
+using Disqord.Extensions.Interactivity.Help;
 using Qmmands;
 
 namespace Causym.Modules.Statistics
 {
     [Group("Statistics", "s")]
-    [GuildOnly]
+    [Disqord.Extensions.Checks.GuildOnly]
     [HelpMetadata("📊")]
     public class Statistics : DiscordModuleBase
     {
         [Command("SetSnapshots")]
-        [RequireMemberGuildPermissions(Disqord.Permission.Administrator)]
+        [Disqord.Extensions.Checks.RequireMemberGuildPermissions(Permission.Administrator)]
         public async Task SetSnapshotsAsync(bool? enabled = null)
         {
             using (var db = new DataContext())
@@ -76,8 +75,8 @@ namespace Causym.Modules.Statistics
         }
 
         [Command("CreateMemberChannel")]
-        [RequireMemberGuildPermissions(Disqord.Permission.Administrator)]
-        [RequireBotGuildPermissions(Disqord.Permission.ManageChannels)]
+        [Disqord.Extensions.Checks.RequireMemberGuildPermissions(Permission.Administrator)]
+        [Disqord.Extensions.Checks.RequireBotGuildPermissions(Permission.ManageChannels)]
         public async Task MemberChannelAsync()
         {
             using (var db = new DataContext())

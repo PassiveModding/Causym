@@ -1,9 +1,10 @@
 ﻿using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
-using Causym.Services.Help;
 using Disqord;
 using Disqord.Bot;
+using Disqord.Extensions.Interactivity.Help;
+using Passive;
 using Qmmands;
 
 namespace Causym.Modules.Translation
@@ -48,8 +49,8 @@ namespace Causym.Modules.Translation
 
         [Command("Reactions")]
         [Description("Updates or displays the current setting for Reaction translations")]
-        [RequireMemberGuildPermissions(Permission.Administrator)]
-        [GuildOnly]
+        [Disqord.Extensions.Checks.RequireMemberGuildPermissions(Permission.Administrator)]
+        [Disqord.Extensions.Checks.GuildOnly]
         public async Task ReactionsAsync(bool? setting = null)
         {
             using (var db = new DataContext())
@@ -88,8 +89,8 @@ namespace Causym.Modules.Translation
 
         [Command("AddEmoji")]
         [Description("Adds a pair for reaction translations")]
-        [RequireMemberGuildPermissions(Permission.Administrator)]
-        [GuildOnly]
+        [Disqord.Extensions.Checks.RequireMemberGuildPermissions(Permission.Administrator)]
+        [Disqord.Extensions.Checks.GuildOnly]
         public async Task AddEmoteAsync(string code, IEmoji emote)
         {
             await AddEmoteAsync(emote, code);
@@ -97,8 +98,8 @@ namespace Causym.Modules.Translation
 
         [Command("AddEmoji")]
         [Description("Adds a pair for reaction translations")]
-        [RequireMemberGuildPermissions(Permission.Administrator)]
-        [GuildOnly]
+        [Disqord.Extensions.Checks.RequireMemberGuildPermissions(Permission.Administrator)]
+        [Disqord.Extensions.Checks.GuildOnly]
         public async Task AddEmoteAsync(IEmoji emote, string code)
         {
             if (!TranslateService.IsValidLanguageCode(code))
@@ -132,8 +133,8 @@ namespace Causym.Modules.Translation
 
         [Command("RemoveEmoji")]
         [Description("Removes a configured emoji for reaction translations")]
-        [RequireMemberGuildPermissions(Permission.Administrator)]
-        [GuildOnly]
+        [Disqord.Extensions.Checks.RequireMemberGuildPermissions(Permission.Administrator)]
+        [Disqord.Extensions.Checks.GuildOnly]
         public async Task RemoveEmojiAsync(IEmoji emote)
         {
             using (var db = new DataContext())
@@ -156,7 +157,6 @@ namespace Causym.Modules.Translation
 
         [Command("Emojis")]
         [Description("Displays all configured emojis for reaction translations")]
-        [GuildOnly]
         public async Task Emojis()
         {
             using (var db = new DataContext())

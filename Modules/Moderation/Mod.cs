@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Causym.Services.Help;
 using Disqord;
 using Disqord.Bot;
+using Disqord.Extensions.Checks;
+using Disqord.Extensions.Interactivity.Help;
 using Disqord.Rest;
 using Qmmands;
 
@@ -11,12 +12,12 @@ namespace Causym.Modules.Moderation
 {
     [Group("Moderation", "Mod", "M")]
     [HelpMetadata("🔨", "#C70039")]
-    [RequireMemberGuildPermissions(Permission.Administrator)]
+    [Disqord.Extensions.Checks.RequireMemberGuildPermissions(Permission.Administrator)]
     public class Mod : DiscordModuleBase
     {
         [Group("Prune")]
         [HelpMetadata("🗄️", "#C70039")]
-        [RequireBotChannelPermissions(Permission.ManageMessages)]
+        [Disqord.Extensions.Checks.RequireBotChannelPermissions(Permission.ManageMessages)]
         public class Prune : DiscordModuleBase
         {
             [Command]
@@ -90,7 +91,6 @@ namespace Causym.Modules.Moderation
             }
 
             [Command]
-            [RequireBotChannelPermissions(Permission.ManageMessages)]
             public async Task PruneAsync(CachedRole role)
             {
                 var messages = await Context.Channel.GetMessagesAsync();

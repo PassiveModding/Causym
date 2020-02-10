@@ -11,20 +11,28 @@
 
   <ItemGroup>
     <PackageReference Include="CommandLineParser" Version="2.7.82" />
-    <PackageReference Include="Disqord" Version="1.0.0-nightly-00031" />
-    <PackageReference Include="Disqord.Bot" Version="1.0.0-nightly-00031" />
-    <PackageReference Include="Disqord.Extensions.Interactivity" Version="1.0.0-nightly-00031" />
+    <PackageReference Include="Disqord" Version="1.0.0-nightly-00037" />
+    <PackageReference Include="Disqord.Bot" Version="1.0.0-nightly-00037" />
+    <PackageReference Include="Disqord.Extensions.Interactivity" Version="1.0.0-nightly-00037" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="3.1.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.1">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="ScottPlot" Version="4.0.15" />
+    <PackageReference Include="ScottPlot" Version="4.0.18" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.113">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\PassiveLibs\Passive.Discord\Passive.Discord.csproj" />
+    <ProjectReference Include="..\..\..\PassiveLibs\Passive.Disqord\Passive.Disqord.csproj" />
+    <ProjectReference Include="..\..\..\PassiveLibs\Passive.Extensions\Passive.Extensions.csproj" />
+    <ProjectReference Include="..\..\..\PassiveLibs\Passive.Handlers\Passive.Handlers.csproj" />
+    <ProjectReference Include="..\..\..\PassiveLibs\Passive.Services\Passive.Services.csproj" />
   </ItemGroup>
 
 </Project>

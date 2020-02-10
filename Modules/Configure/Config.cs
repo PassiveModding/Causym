@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
-using Causym.Services.Help;
 using Disqord.Bot;
+using Disqord.Extensions.Interactivity.Help;
 using Qmmands;
 
 namespace Causym.Modules.Configure
@@ -11,7 +11,7 @@ namespace Causym.Modules.Configure
     {
         [Command("SetPrefix")]
         [Description("Set's the bot's custom prefix for the current server")]
-        [RequireMemberGuildPermissions(Disqord.Permission.Administrator)]
+        [Disqord.Extensions.Checks.RequireMemberGuildPermissions(Disqord.Permission.Administrator)]
         [GuildOnly]
         public async Task SetPrefixAsync(string prefix = null)
         {

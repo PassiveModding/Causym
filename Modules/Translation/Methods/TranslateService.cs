@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Causym.Services;
 using Disqord;
 using Disqord.Bot.Sharding;
 using Disqord.Events;
 using Disqord.Rest;
+using Passive;
+using Passive.Discord.Setup;
 
 namespace Causym.Modules.Translation
 {

@@ -3,11 +3,13 @@ using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Causym.Services.Help;
 using Disqord;
 using Disqord.Bot;
+using Disqord.Extensions.Interactivity.Help;
 using Disqord.Extensions.Interactivity.Menus;
 using Newtonsoft.Json.Linq;
+using Passive;
+using Passive.Discord;
 using Qmmands;
 
 namespace Causym.Modules.General

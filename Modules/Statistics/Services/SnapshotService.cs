@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Causym.Services;
 using Disqord.Events;
+using Passive;
 
 namespace Causym.Modules.Statistics
 {
