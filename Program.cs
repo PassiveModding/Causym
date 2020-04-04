@@ -73,7 +73,7 @@ namespace Causym
                 });
 
             bot.AddTypeParser(new IEmojiParser(bot.GetRequiredService<HttpClient>()));
-            bot.AddTypeParser(new TimeSpanParser());
+            bot.AddTypeParser(new Disqord.Extensions.Parsers.TimeSpanParser());
             await bot.AddExtensionAsync(new InteractivityExtension());
 
             // Initializes services marked with the Service attribute from the
