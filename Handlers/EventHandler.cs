@@ -4,7 +4,9 @@ using Disqord;
 using Disqord.Bot;
 using Disqord.Bot.Sharding;
 using Disqord.Events;
+using Disqord.Extensions.Passive;
 using Passive;
+using Passive.Logging;
 using Qmmands;
 
 namespace Causym
@@ -25,6 +27,7 @@ namespace Causym
             Bot = bot;
             Logger = logger;
 
+            Bot.Logger.MessageLogged += Logger_MessageLogged;
             Bot.ShardReady += Bot_ShardReady;
             Bot.Ready += ReadyAsync;
             Bot.CommandExecuted += CommandExecutedAsync;
@@ -48,7 +51,13 @@ namespace Causym
 
         private void Logger_MessageLogged(object sender, Disqord.Logging.MessageLoggedEventArgs e)
         {
-            Logger.Log(e.Message, Logger.Source.Bot, Logger.LogLevel.Verbose);
+            if (e.Exception != null)
+            {
+                Logger.Log(e.Message + "\n" + e.Exception.ToString(), e.Source, e.Severity.GetLevel());
+                return;
+            }
+
+            Logger.Log(e.Message, e.Source, e.Severity.GetLevel());
         }
 
         private async Task CommandExecutionFailedAsync(CommandExecutionFailedEventArgs e)

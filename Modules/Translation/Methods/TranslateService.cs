@@ -8,6 +8,7 @@ using Disqord.Events;
 using Disqord.Rest;
 using Passive;
 using Passive.Discord.Setup;
+using Passive.Logging;
 
 namespace Causym.Modules.Translation
 {

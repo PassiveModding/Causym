@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Net.Http;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -13,12 +14,13 @@ using Microsoft.Extensions.DependencyInjection;
 using Passive;
 using Passive.Discord;
 using Passive.Discord.Setup;
+using Passive.Logging;
 
 namespace Causym
 {
     public class Program
     {
-        private readonly Logger logger = new Logger();
+        private readonly Logger logger = new Logger(Logger.LogLevel.Info, Path.Combine(AppContext.BaseDirectory, "logs"));
 
         public static void Main(string[] args = null)
         {

@@ -4,6 +4,7 @@ using System.Text.RegularExpressions;
 using Disqord;
 using Disqord.Rest;
 using Passive;
+using static Passive.Logging.Logger;
 
 namespace Causym.Modules.Translation
 {
@@ -220,7 +221,7 @@ namespace Causym.Modules.Translation
             }
             catch (Exception e)
             {
-                Logger.Log(e.ToString(), "TRANSLATE", Passive.Logger.LogLevel.Error);
+                Logger.Log(e.ToString(), "TRANSLATE", LogLevel.Error);
             }
 
             return new TranslateResponse(TranslateResponse.Result.TranslationError);
@@ -240,7 +241,7 @@ namespace Causym.Modules.Translation
             }
             catch (Exception e)
             {
-                Logger.Log(e.ToString(), "TRANSLATE", Passive.Logger.LogLevel.Error);
+                Logger.Log(e.ToString(), "TRANSLATE", LogLevel.Error);
                 return null;
             }
         }
