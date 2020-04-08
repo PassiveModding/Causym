@@ -3,7 +3,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Disqord;
 using Disqord.Bot;
-using Disqord.Extensions.Checks;
 using Disqord.Extensions.Interactivity.Help;
 using Disqord.Rest;
 using Qmmands;
@@ -15,6 +14,41 @@ namespace Causym.Modules.Moderation
     [Disqord.Extensions.Checks.RequireMemberGuildPermissions(Permission.Administrator)]
     public class Mod : DiscordModuleBase
     {
+        [Command("PruneBan")]
+        [Description("Bans all members who have the specified content in their message.")]
+        [Disqord.Extensions.Checks.RequireMemberGuildPermissions(Permission.Administrator)]
+        [Disqord.Extensions.Checks.RequireBotGuildPermissions(Permission.BanMembers)]
+        public async Task PruneBanAsync([Remainder]string messageMatch)
+        {
+            if (messageMatch.Length < 5)
+            {
+                await ReplyAsync("Minimum message length is 5 to avoid accidental bans.");
+                return;
+            }
+
+            int counter = 0;
+            var messages = await Context.Channel.GetMessagesAsync();
+            foreach (var message in messages)
+            {
+                if (message.Author is RestMember mem)
+                {
+                    // Skips members with roles.
+                    if (mem.RoleIds.Any()) continue;
+                }
+
+                // Skip attempting to ban the current user.
+                if (message.Author.Id == Context.User.Id) continue;
+
+                if (message.Content.Contains(messageMatch, System.StringComparison.OrdinalIgnoreCase))
+                {
+                    await Context.Guild.BanMemberAsync(message.Author.Id, $"PruneBan for message match: {messageMatch}", 7);
+                    counter++;
+                }
+            }
+
+            await ReplyAsync($"PruneBanned {counter} messages and their authors.");
+        }
+
         [Group("Prune")]
         [HelpMetadata("🗄️", "#C70039")]
         [Disqord.Extensions.Checks.RequireBotChannelPermissions(Permission.ManageMessages)]
