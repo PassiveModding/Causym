@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Disqord;
+using Disqord.Bot;
 using Disqord.Bot.Sharding;
 using Disqord.Events;
 using Disqord.Rest;
@@ -41,7 +42,7 @@ namespace Causym.Modules.Translation
         /// <param name="bot">The discord bot.</param>
         /// <param name="config">The bot's default configuration.</param>
         /// <param name="logger">The log handler.</param>
-        public TranslateService(DiscordBotSharder bot, Config config, Logger logger)
+        public TranslateService(DiscordBotBase bot, Config config, Logger logger)
         {
             Config = config;
             Logger = logger;

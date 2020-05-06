@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Causym.Migrations
 {
-    public partial class InitDatabase : Migration
+    public partial class init_postgres : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -11,8 +11,8 @@ namespace Causym.Migrations
                 name: "ChannelSnapshots",
                 columns: table => new
                 {
-                    GuildId = table.Column<ulong>(nullable: false),
-                    ChannelId = table.Column<ulong>(nullable: false),
+                    GuildId = table.Column<decimal>(nullable: false),
+                    ChannelId = table.Column<decimal>(nullable: false),
                     SnapshotTime = table.Column<DateTime>(nullable: false),
                     MessageCount = table.Column<int>(nullable: false)
                 },
@@ -25,8 +25,9 @@ namespace Causym.Migrations
                 name: "Guilds",
                 columns: table => new
                 {
-                    GuildId = table.Column<ulong>(nullable: false),
-                    Prefix = table.Column<string>(nullable: true)
+                    GuildId = table.Column<decimal>(nullable: false),
+                    Prefix = table.Column<string>(nullable: true),
+                    RespondOnCommandFailure = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -37,8 +38,8 @@ namespace Causym.Migrations
                 name: "StatServers",
                 columns: table => new
                 {
-                    GuildId = table.Column<ulong>(nullable: false),
-                    MemberChannelId = table.Column<ulong>(nullable: true),
+                    GuildId = table.Column<decimal>(nullable: false),
+                    MemberChannelId = table.Column<decimal>(nullable: true),
                     SnapshotsEnabled = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
@@ -50,7 +51,7 @@ namespace Causym.Migrations
                 name: "StatSnapshots",
                 columns: table => new
                 {
-                    GuildId = table.Column<ulong>(nullable: false),
+                    GuildId = table.Column<decimal>(nullable: false),
                     SnapshotTime = table.Column<DateTime>(nullable: false),
                     MemberCount = table.Column<int>(nullable: false),
                     TotalMessageCount = table.Column<int>(nullable: false),
@@ -68,7 +69,7 @@ namespace Causym.Migrations
                 name: "TranslateGuilds",
                 columns: table => new
                 {
-                    GuildId = table.Column<ulong>(nullable: false),
+                    GuildId = table.Column<decimal>(nullable: false),
                     ReactionsEnabled = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
@@ -80,7 +81,7 @@ namespace Causym.Migrations
                 name: "TranslatePairs",
                 columns: table => new
                 {
-                    GuildId = table.Column<ulong>(nullable: false),
+                    GuildId = table.Column<decimal>(nullable: false),
                     Source = table.Column<string>(maxLength: 100, nullable: false),
                     DestLang = table.Column<string>(maxLength: 100, nullable: false)
                 },

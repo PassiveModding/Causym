@@ -22,13 +22,16 @@ namespace Causym
         /// </summary>
         /// <param name="bot">The discord bot events should be logged for.</param>
         /// <param name="logger">The log handler, used for handling generic logging.</param>
-        public EventHandler(DiscordBotSharder bot, Logger logger)
+        public EventHandler(DiscordBotBase bot, Logger logger)
         {
             Bot = bot;
             Logger = logger;
 
             Bot.Logger.MessageLogged += Logger_MessageLogged;
-            Bot.ShardReady += Bot_ShardReady;
+            if (bot is DiscordBotSharder sharder)
+            {
+                sharder.ShardReady += Bot_ShardReady;
+            }
             Bot.Ready += ReadyAsync;
             Bot.CommandExecuted += CommandExecutedAsync;
             Bot.CommandExecutionFailed += CommandExecutionFailedAsync;
@@ -38,7 +41,7 @@ namespace Causym
 #endif
         }
 
-        private DiscordBotSharder Bot { get; }
+        private DiscordBotBase Bot { get; }
 
         private Logger Logger { get; }
 
@@ -51,6 +54,21 @@ namespace Causym
 
         private void Logger_MessageLogged(object sender, Disqord.Logging.MessageLoggedEventArgs e)
         {
+            if (e.Severity == Disqord.Logging.LogMessageSeverity.Warning)
+            {
+                if (e.Message.StartsWith("Close:"))
+                {
+                    State = ConnectionState.Closed;
+                }
+            }
+            else if (e.Severity == Disqord.Logging.LogMessageSeverity.Information)
+            {
+                if (e.Message.StartsWith("Resumed."))
+                {
+                    State = ConnectionState.Connected;
+                }
+            }
+
             if (e.Exception != null)
             {
                 Logger.Log(e.Message + "\n" + e.Exception.ToString(), e.Source, e.Severity.GetLevel());
@@ -104,18 +122,32 @@ namespace Causym
             return Task.CompletedTask;
         }
 
+        public ConnectionState State = ConnectionState.Connected;
+
+        public enum ConnectionState
+        {
+            Closed,
+
+            Connected
+        }
+
         private Task ReadyAsync(ReadyEventArgs e)
         {
-            if (Bot.Shards.Count != 0)
+            if (Bot is DiscordBotSharder sharder)
             {
-                Logger.Log($"All Shards Ready ({string.Join(',', Bot.Shards.Select(x => x.Id))})", Logger.Source.Bot);
-            }
-            else
-            {
-                Logger.Log($"All Shards Ready", Logger.Source.Bot);
+                if (sharder.Shards.Count != 0)
+                {
+                    Logger.Log($"All Shards Ready ({string.Join(',', sharder.Shards.Select(x => x.Id))})", Logger.Source.Bot);
+                }
+                else
+                {
+                    Logger.Log($"All Shards Ready", Logger.Source.Bot);
+                }
+
+                Logger.Log($"Total Guilds: {e.Client.Guilds.Count}", Logger.Source.Bot);
             }
 
-            Logger.Log($"Total Guilds: {e.Client.Guilds.Count}", Logger.Source.Bot);
+            State = ConnectionState.Connected;
             return Task.CompletedTask;
         }
 

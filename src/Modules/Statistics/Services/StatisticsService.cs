@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Disqord.Bot;
 using Disqord.Bot.Sharding;
 using Disqord.Events;
 
@@ -14,7 +15,7 @@ namespace Causym.Modules.Statistics
 
         private readonly int shapshotCallbackInterval = 60 * 1000 * 60;
 
-        public StatisticsService(DiscordBotSharder bot)
+        public StatisticsService(DiscordBotBase bot)
         {
             using (var db = new DataContext())
             {
@@ -25,7 +26,7 @@ namespace Causym.Modules.Statistics
             Bot.Ready += Bot_Ready;
         }
 
-        public DiscordBotSharder Bot { get; }
+        public DiscordBotBase Bot { get; }
 
         public Timer ChannelTimer { get; private set; }
 

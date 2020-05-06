@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using Causym.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace Causym
@@ -22,8 +23,9 @@ namespace Causym
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            // optionsBuilder.UseNpgsql(Config.PostgresConnectionString());
-            optionsBuilder.UseSqlite($"Data Source={Path.Combine(AppContext.BaseDirectory, "database.sqlite")}");
+            optionsBuilder.UseNpgsql(DbConnection.DbConnectionString);
+
+            //optionsBuilder.UseSqlite(DbConnection.DbConnectionString);
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
