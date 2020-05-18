@@ -5,7 +5,6 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Causym.Services;
-using CommandLine;
 using Disqord;
 using Disqord.Bot;
 using Disqord.Bot.Prefixes;
@@ -177,33 +176,6 @@ namespace Causym
                     }))
                 });
             }
-
-            /*
-            var bot = new DiscordBotSharder(
-                TokenType.Bot,
-                config.GetOrAddEntry(Config.Defaults.Token.ToString(), () =>
-                {
-                    logger.Log(
-                        $"Please input bot token, can be found at: " +
-                        $"{Constants.DeveloperApplicationLink}",
-                        Logger.Source.Bot);
-                    return Console.ReadLine();
-                }),
-                new DatabasePrefixProvider(config.GetOrAddEntry(Config.Defaults.Prefix.ToString(), () =>
-                {
-                    logger.Log($"Please input bot default prefix:", Logger.Source.Bot);
-                    return Console.ReadLine();
-                })),
-                new DiscordBotSharderConfiguration
-                {
-                    ProviderFactory = bot => botServiceCollection
-                        .AddDbContext<DataContext>(ServiceLifetime.Transient)
-                        .AddSingleton(bot as DiscordBotSharder)
-                        .AddSingleton(config)
-                        .AddSingleton(logger)
-                        .BuildServiceProvider(),
-                    ShardCount = int.Parse(config.GetOrAddEntry(Config.Defaults.ShardCount.ToString(), () => "1"))
-                });*/
 
             bot.AddTypeParser(new IEmojiParser(bot.GetRequiredService<HttpClient>()));
             bot.AddTypeParser(new Disqord.Extensions.Parsers.TimeSpanParser());
