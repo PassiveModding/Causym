@@ -9,7 +9,7 @@ namespace Causym.Services
 
         public static string DatabaseName { get; set; }
 
-        public static string DbConnectionString => $"Host={Host};Port={port};Database={DatabaseName};Username={Username};Password={Password};";
+        public static string DbConnectionString => $"Server={Host};Port={port};Database={DatabaseName};User Id={Username};Password={Password};";
 
         public static string Host { get; set; }
 
