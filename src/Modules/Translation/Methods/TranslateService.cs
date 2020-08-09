@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Causym.Modules.Translation.Methods.Causym.Modules.Translation;
 using Disqord;
 using Disqord.Bot;
 using Disqord.Bot.Sharding;
@@ -34,7 +35,7 @@ namespace Causym.Modules.Translation
                         new TranslationSet { EmoteMatches = new List<string> { "🇯🇵" }, LanguageString = "ja" }
             };
 
-        private readonly YandexTranslator translator;
+        private readonly GoogleTranslator translator;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TranslateService"/> class.
@@ -46,11 +47,7 @@ namespace Causym.Modules.Translation
         {
             Config = config;
             Logger = logger;
-            translator = new YandexTranslator(Config.GetOrAddEntry("YandexKey", () =>
-            {
-                logger.Log("Enter Yandex api key", "TRANSLATE", Logger.LogLevel.Info);
-                return Console.ReadLine();
-            }));
+            translator = new GoogleTranslator();
             bot.ReactionAdded += ReactionAddedAsync;
         }
 

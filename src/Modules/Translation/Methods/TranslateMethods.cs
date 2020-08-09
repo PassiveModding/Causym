@@ -19,7 +19,7 @@ namespace Causym.Modules.Translation
 
             try
             {
-                // Used to fix links that are created using the []() firmat.
+                // Used to fix links that are created using the []() format.
                 translationString = translationString.Replace("] (", "](");
 
                 // Fixed user mentions
@@ -73,16 +73,12 @@ namespace Causym.Modules.Translation
 
             if (message is RestUserMessage restMsg)
             {
-                embed.AddField("Yandex", $"[Powered by Yandex](http://translate.yandex.com/) [Original](https://discordapp.com/channels/{restMsg.GuildId?.RawValue.ToString() ?? "@me"}/{restMsg.ChannelId.RawValue}/{message.Id.RawValue}/)");
+                embed.AddField("Original", $"[Original](https://discordapp.com/channels/{restMsg.GuildId?.RawValue.ToString() ?? "@me"}/{restMsg.ChannelId.RawValue}/{message.Id.RawValue}/)");
             }
             else if (message is CachedUserMessage cMsg)
             {
                 var gid = cMsg.Guild == null ? "@me" : cMsg.Guild.Id.RawValue.ToString();
-                embed.AddField("Yandex", $"[Powered by Yandex](http://translate.yandex.com/) [Original](https://discordapp.com/channels/{gid}/{cMsg.Channel.Id.RawValue}/{message.Id.RawValue}/)");
-            }
-            else
-            {
-                embed.AddField("Yandex", $"[Powered by Yandex](http://translate.yandex.com/)");
+                embed.AddField("Original", $"[Original](https://discordapp.com/channels/{gid}/{cMsg.Channel.Id.RawValue}/{message.Id.RawValue}/)");
             }
 
             embed.Color = Color.Green;
@@ -186,16 +182,12 @@ namespace Causym.Modules.Translation
             {
                 if (message is RestUserMessage restMsg)
                 {
-                    builder.AddField("Yandex", $"[Powered by Yandex](http://translate.yandex.com/) [Original](https://discordapp.com/channels/{restMsg.GuildId?.RawValue.ToString() ?? "@me"}/{restMsg.ChannelId.RawValue}/{message.Id.RawValue}/)");
+                    builder.AddField("Original", $"[Original](https://discordapp.com/channels/{restMsg.GuildId?.RawValue.ToString() ?? "@me"}/{restMsg.ChannelId.RawValue}/{message.Id.RawValue}/)");
                 }
                 else if (message is CachedUserMessage cMsg)
                 {
                     var gid = cMsg.Guild == null ? "@me" : cMsg.Guild.Id.RawValue.ToString();
-                    builder.AddField("Yandex", $"[Powered by Yandex](http://translate.yandex.com/) [Original](https://discordapp.com/channels/{gid}/{cMsg.Channel.Id.RawValue}/{message.Id.RawValue}/)");
-                }
-                else
-                {
-                    builder.AddField("Yandex", $"[Powered by Yandex](http://translate.yandex.com/)");
+                    builder.AddField("Original", $"[Original](https://discordapp.com/channels/{gid}/{cMsg.Channel.Id.RawValue}/{message.Id.RawValue}/)");
                 }
             }
 
