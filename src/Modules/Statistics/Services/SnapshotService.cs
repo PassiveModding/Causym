@@ -9,7 +9,7 @@ using Passive;
 
 namespace Causym.Modules.Statistics
 {
-    [Service]
+    //[Service]
     public partial class StatisticsService
     {
         public Timer SnapshotTimer { get; private set; }

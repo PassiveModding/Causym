@@ -2,9 +2,9 @@ using System;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Disqord;
+using Disqord.Logging;
 using Disqord.Rest;
 using Passive;
-using static Passive.Logging.Logger;
 
 namespace Causym.Modules.Translation
 {
@@ -213,7 +213,7 @@ namespace Causym.Modules.Translation
             }
             catch (Exception e)
             {
-                Logger.Log(e.ToString(), "TRANSLATE", LogLevel.Error);
+                Logger.Log("Translate", "Issue in translation function", LogSeverity.Error, e);
             }
 
             return new TranslateResponse(TranslateResponse.Result.TranslationError);
@@ -233,7 +233,7 @@ namespace Causym.Modules.Translation
             }
             catch (Exception e)
             {
-                Logger.Log(e.ToString(), "TRANSLATE", LogLevel.Error);
+                Logger.Log("Translate", "Issue in TranslateText function", LogSeverity.Error, e);
                 return null;
             }
         }

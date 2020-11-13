@@ -1,10 +1,12 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Disqord;
 using Disqord.Bot;
 using Disqord.Bot.Sharding;
 using Disqord.Events;
 using Disqord.Extensions.Passive;
+using Disqord.Logging;
 using Passive;
 using Passive.Logging;
 using Qmmands;
@@ -27,7 +29,7 @@ namespace Causym
             Bot = bot;
             Logger = logger;
 
-            Bot.Logger.MessageLogged += Logger_MessageLogged;
+            Bot.Logger.Logged += Logger_MessageLogged;
             if (bot is DiscordBotSharder sharder)
             {
                 sharder.ShardReady += Bot_ShardReady;
@@ -47,44 +49,36 @@ namespace Causym
 
         private async Task Bot_ShardReady(Disqord.Sharding.ShardReadyEventArgs e)
         {
-            Logger.Log($"Shard {e.Shard.Id} Ready, Guilds: {e.Shard.Guilds.Count}", Logger.Source.Bot);
+            Logger.Log("Connection", $"Shard {e.Shard.Id} Ready, Guilds: {e.Shard.Guilds.Count}", LogSeverity.Information);
             var prefixResponse = await Bot.PrefixProvider.GetPrefixesAsync(null);
             await e.Shard.SetPresenceAsync(new Disqord.LocalActivity($"{prefixResponse.Last()}help", Disqord.ActivityType.Watching));
         }
 
-        private void Logger_MessageLogged(object sender, Disqord.Logging.MessageLoggedEventArgs e)
+        private void Logger_MessageLogged(object sender, Disqord.Logging.LogEventArgs e)
         {
-            if (e.Severity == Disqord.Logging.LogMessageSeverity.Warning)
+            if (e.Severity == Disqord.Logging.LogSeverity.Warning)
             {
                 if (e.Message.StartsWith("Close:"))
                 {
                     State = ConnectionState.Closed;
                 }
             }
-            else if (e.Severity == Disqord.Logging.LogMessageSeverity.Information)
+            else if (e.Severity == Disqord.Logging.LogSeverity.Information)
             {
                 if (e.Message.StartsWith("Resumed."))
                 {
                     State = ConnectionState.Connected;
                 }
             }
-
-            if (e.Exception != null)
-            {
-                Logger.Log(e.Message + "\n" + e.Exception.ToString(), e.Source, e.Severity.GetLevel());
-                return;
-            }
-
-            Logger.Log(e.Message, e.Source, e.Severity.GetLevel());
         }
 
         private async Task CommandExecutionFailedAsync(CommandExecutionFailedEventArgs e)
         {
             var context = e.Context as DiscordCommandContext;
-            Logger.Log(
-                $"Command Failed: {e.Context.Command.Name} {e.Result.CommandExecutionStep} {e.Result.Reason}\n" +
+            Logger.Log("Command",
+                $"Failed: {e.Context.Command.Name} {e.Result.CommandExecutionStep} {e.Result.Reason}\n" +
                 $"{e.Result.Exception.StackTrace}",
-                Logger.Source.Cmd);
+                LogSeverity.Warning);
 
             bool response = true;
 
@@ -118,7 +112,7 @@ namespace Causym
 
         private Task CommandExecutedAsync(CommandExecutedEventArgs e)
         {
-            Logger.Log($"Command Executed: {e.Context.Command.Name}", Logger.Source.Cmd);
+            Logger.Log("Command", $"Command Executed: {e.Context.Command.Name}", LogSeverity.Information);
             return Task.CompletedTask;
         }
 
@@ -137,14 +131,14 @@ namespace Causym
             {
                 if (sharder.Shards.Count != 0)
                 {
-                    Logger.Log($"All Shards Ready ({string.Join(',', sharder.Shards.Select(x => x.Id))})", Logger.Source.Bot);
+                    Logger.Log("Connection", $"All Shards Ready ({string.Join(',', sharder.Shards.Select(x => x.Id))})", LogSeverity.Information);
                 }
                 else
                 {
-                    Logger.Log($"All Shards Ready", Logger.Source.Bot);
+                    Logger.Log("Connection", "All Shards Ready", LogSeverity.Information);
                 }
 
-                Logger.Log($"Total Guilds: {e.Client.Guilds.Count}", Logger.Source.Bot);
+                Logger.Log("Connection", $"Total Guilds: {e.Client.Guilds.Count}", LogSeverity.Information);
             }
 
             State = ConnectionState.Connected;
@@ -156,13 +150,13 @@ namespace Causym
             if (e.Message is CachedUserMessage cM)
             {
                 Logger.Log(
+                    "Bot", 
                     "Message: " + cM.Content + (cM.Embeds.Count > 0 ? cM.Embeds.Count + " Embed(s)" : ""),
-                    Logger.Source.Bot,
-                    Logger.LogLevel.Debug);
+                    LogSeverity.Trace);
             }
             else
             {
-                Logger.Log("Message: " + e.Message.Content, Logger.Source.Bot, Logger.LogLevel.Debug);
+                Logger.Log("Bot", "Message: " + e.Message.Content, LogSeverity.Trace);
             }
 
             return Task.CompletedTask;

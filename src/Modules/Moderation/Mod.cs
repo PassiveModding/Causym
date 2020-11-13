@@ -82,7 +82,7 @@ namespace Causym.Modules.Moderation
                     {
                         // Check against member roles.
                         messages = messages
-                            .Where(x => (x.Author as RestMember)?.RoleIds.Contains(countOrUserOrRoleId) == true);
+                            .Where(x => (x.Author as RestMember)?.RoleIds.Any(y => y.RawValue == countOrUserOrRoleId) == true);
                         if (messages.Count() == count)
                         {
                             // No matches found.
@@ -117,7 +117,7 @@ namespace Causym.Modules.Moderation
             }
 
             [Command]
-            public async Task PruneAsync(CachedUser user)
+            public async Task PruneAsync(IUser user)
             {
                 var messages = await Context.Channel.GetMessagesAsync();
                 await (Context.Channel as ITextChannel)
