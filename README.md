@@ -2,9 +2,11 @@
 
 Causym is a discord bot built using https://github.com/Quahu/Disqord
 
+<a href="https://www.buymeacoffee.com/Jaquesy"><img src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=&slug=Jaquesy&button_colour=BD5FFF&font_colour=ffffff&font_family=Cookie&outline_colour=000000&coffee_colour=FFDD00"></a>
+
 ## Current Features
 - Custom guild prefixes
-- Message translation via Yandex API
+- Message translation
 - Guild/channel statistics tracking including snapshots of message frequency, members online/dnd/idle and total member counts
 
 ## Requirements
